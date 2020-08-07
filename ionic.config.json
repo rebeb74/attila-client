@@ -1,0 +1,7 @@
+{
+  "name": "attila-client",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
