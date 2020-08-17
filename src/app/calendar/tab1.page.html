@@ -1,0 +1,21 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Calendrier
+    </ion-title>
+    <a [routerLink]="['/tabs/tab1/add-event']" slot="end"><ion-icon name="add" size="large" class="addBtn"></ion-icon></a>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="ion-padding">
+    <ion-calendar #calendar [(ngModel)]="date" [type]="type" (select)="onChange($event)"
+      [options]="optionsRange">
+    </ion-calendar>
+  </div>
+
+</ion-content>

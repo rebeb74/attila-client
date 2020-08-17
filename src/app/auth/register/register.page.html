@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button icon="arrow-back-outline" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Inscription</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="registerForm" #registerFormValid="ngForm" (ngSubmit)="register()">
+    <ion-item>
+      <ion-label>Email</ion-label>
+      <ion-input formControlName="email" type="email" placeholder="exemple@attila.com" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Nom d'utilisateur</ion-label>
+      <ion-input formControlName="username" type="text" placeholder="Attila" required></ion-input>
+    </ion-item>
+  
+    <ion-item>
+      <ion-label>Mot de passe</ion-label>
+      <ion-input formControlName="password" type="password" placeholder="********" required></ion-input>
+    </ion-item>
+    <br>
+  
+    <ion-button type="submit" [disabled]="!registerFormValid.form.valid" expand="block">
+      C'est parti !
+    </ion-button>
+
+  </form>
+</ion-content>

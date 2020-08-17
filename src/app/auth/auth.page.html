@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Attila</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="loginForm" #loginFormValid="ngForm" (ngSubmit)="login()">
+    <ion-item class="champ" >
+      <ion-label>Nom d'utilisateur</ion-label>
+      <ion-input formControlName="username" type="text" placeholder="Attila" required></ion-input>
+    </ion-item>
+  
+    <ion-item class="champ" >
+      <ion-label>Mot de passe</ion-label>
+      <ion-input formControlName="password" type="password" placeholder="********" required></ion-input>
+    </ion-item>
+    <br>
+  
+    <ion-button type="submit" [disabled]="!loginFormValid.form.valid" expand="block" class="btn">
+      Connection
+    </ion-button>
+    <br>
+    
+  </form>
+      <ion-item lines="none" class="champ" >
+        Pas encore enregistré ? <a [routerLink]="['/auth/register']">Inscrivez-vous !</a>
+      </ion-item>
+
+</ion-content>
