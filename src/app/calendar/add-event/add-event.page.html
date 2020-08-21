@@ -23,41 +23,44 @@
     <form [formGroup]="addEventForm" #formDirective="ngForm" (ngSubmit)="createEvent(formDirective)">
 
       <ion-item class="champ" lines="none">
-        <ion-input type="text" placeholder="Titre requis" formControlName="title" required>
+        <ion-label position="floating">Titre</ion-label>
+        <ion-input type="text" formControlName="title" required>
         </ion-input>
       </ion-item>
 
       <ion-item class="champ" lines="none">
-        <ion-input type="text" placeholder="Description" formControlName="description">
+        <ion-label position="floating">Description</ion-label>
+        <ion-input type="text" formControlName="description">
         </ion-input>
       </ion-item>
 
       <ion-item *ngIf="typeEvent === 'rdv'" class="champ" lines="none">
+        <ion-label position="floating">Lieu</ion-label>
         <ion-input type="text" placeholder="Lieu" formControlName="place"></ion-input>
       </ion-item>
 
       <ion-item class="champ" lines="none">
-        <ion-label>Date</ion-label>
+        <ion-label position="floating">Date</ion-label>
         <ion-datetime formControlName="startTime" doneText="OK" cancelText="Annuler"
           monthShortNames='jan, fev, mar, avr, mai, juin, juil, août, sept, oct, nov, dec' displayFormat="DD MMM YYYY"
-          pickerFormat="DD/MM/YYYY" required placeholder="requis"></ion-datetime>
+          pickerFormat="DD/MM/YYYY" required></ion-datetime>
       </ion-item>
 
       <ion-item *ngIf="typeEvent === 'rdv'" class="champ" lines="none">
-        <ion-label>Heure</ion-label>
+        <ion-label position="floating">Heure</ion-label>
         <ion-datetime formControlName="startHour" doneText="OK" cancelText="Annuler" displayFormat="HH:mm"
           pickerFormat="HH:mm"></ion-datetime>
       </ion-item>
 
       <ion-item *ngIf="typeEvent === 'rdv'" class="champ" lines="none">
-        <ion-label>Alerte</ion-label>
+        <ion-label position="floating">Alerte</ion-label>
         <ion-datetime formControlName="alert" doneText="OK" cancelText="Annuler"
           monthShortNames='jan, fev, mar, avr, mai, juin, juil, août, sept, oct, nov, dec' displayFormat="DD MMM YYYY HH:mm"
           pickerFormat="DD/MM/YYYY HH:mm"></ion-datetime>
       </ion-item>
 
       <ion-item *ngIf="typeEvent === 'task'" class="champ" lines="none">
-        <ion-label>Répéter</ion-label>
+        <ion-label position="floating">Répéter</ion-label>
         <ion-select formControlName="repeat" okText="Ok" cancelText="Annuler" interface="action-sheet"
           class="custom-options">
           <ion-select-option value="0">Non</ion-select-option>
@@ -69,7 +72,7 @@
       </ion-item>
 
       <ion-item *ngIf="typeEvent === 'task'" class="champ" lines="none">
-        <ion-label>Alterner</ion-label>
+        <ion-label position="floating">Alterner</ion-label>
         <ion-checkbox formControlName="altern" checked="true"></ion-checkbox>
       </ion-item>
 

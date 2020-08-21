@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CalendarService } from '../services/calendar.service';
-import { Tab1Page } from '../tab1.page';
-
+import { CalendarService } from '../../services/calendar.service';
+import { Subscription } from 'rxjs';
+import { DayConfig, CalendarComponentOptions } from '../ion2-calendar';
+import { ApiService } from 'src/app/services/api.service';
 
 @Component({
   selector: 'app-add-event',
@@ -13,8 +14,12 @@ import { Tab1Page } from '../tab1.page';
 export class AddEventPage implements OnInit {
   typeEvent = 'task';
   addEventForm: FormGroup;
+  daysConfigSubcription: Subscription;
+  optionsRangeSubcription: Subscription;
+  optionsRange: CalendarComponentOptions;
+  daysConfig: DayConfig[] = [];
 
-  constructor(private fb: FormBuilder, private router: Router, private calService: CalendarService, private calPage: Tab1Page) { }
+  constructor(private fb: FormBuilder, private router: Router, private calService: CalendarService,  private apiService: ApiService) { }
 
   ngOnInit() {
     this.createForm();
@@ -45,23 +50,24 @@ export class AddEventPage implements OnInit {
     if (this.addEventForm.valid) {
       console.log(this.addEventForm);
       if (this.typeEvent === 'rdv') {
-        this.calService
-          .createEvent(this.addEventForm.value)
-          .subscribe(data => this.handleSuccess(data, formDirective), error => this.handleError(error));
+        console.log('typeEventEvent', this.typeEvent);
+        this.apiService
+        .createEvent(this.addEventForm.value)
+        .subscribe(data => this.handleSuccess(data, formDirective), error => this.handleError(error));
       } else {
-        this.calService
+        console.log('typeEventTask', this.typeEvent);
+        this.apiService
           .createTask(this.addEventForm.value)
           .subscribe(data => this.handleSuccess(data, formDirective), error => this.handleError(error));
       }
     }
-    this.router.navigate(['/tabs/tab1']);
   }
 
   handleSuccess(data, formDirective) {
     console.log('OK event created', data);
     this.addEventForm.reset(); // reset inputs
     formDirective.resetForm(); // reset validation
-    // this.calPage.refresh();
+    this.router.navigate(['/tabs/tab1']);
   }
 
   handleError(data) {

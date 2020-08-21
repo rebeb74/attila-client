@@ -1,26 +1,17 @@
 import { Injectable } from '@angular/core';
-import { config } from '../../config/config';
 import { HttpClient } from '@angular/common/http';
-import { catchError, mapTo, tap } from 'rxjs/operators';
+import { mapTo, catchError } from 'rxjs/operators';
+import { config } from '../config/config';
 import { of, Observable } from 'rxjs';
-import { Event } from '../models/event';
-import { Task } from '../models/task';
+import { Task, Event, AllEvents } from '../models/event';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CalendarService {
-  selectedDay: string;
+export class ApiService {
 
   constructor(private http: HttpClient) { }
-
-  setSelectedDay(selectedDay) {
-    this.selectedDay = selectedDay;
-  }
-
-  getSelectedDay() {
-    return this.selectedDay;
-  }
 
   createEvent(event: Event) {
     return this.http.post<Event>(`${config.apiUrl}/events`, event)
@@ -42,6 +33,10 @@ export class CalendarService {
         }));
   }
 
+  getUser(): Observable<User>{
+    return this.http.get<User>(`${config.apiUrl}/user`);
+  }
+
   getEvents(): Observable<Event[]> {
     return this.http.get<Event[]>(`${config.apiUrl}/events`);
   }
@@ -50,4 +45,23 @@ export class CalendarService {
     return this.http.get<Task[]>(`${config.apiUrl}/tasks`);
   }
 
+  updateTaskById(id, task: Task){
+    return this.http.put<Task[]>(`${config.apiUrl}/tasks/` + id, task);
+  }
+
+  updateUserById(id, user: User){
+    return this.http.put<User>(`${config.apiUrl}/users/` + id, user);
+  }
+
+  deleteEventById(id){
+    return this.http.delete<Event[]>(`${config.apiUrl}/events/` + id);
+  }
+
+  deleteTaskById(id){
+    return this.http.delete<Task[]>(`${config.apiUrl}/tasks/` + id);
+  }
+
+  getAllEvents(): Observable<AllEvents[]> {
+    return this.http.get<AllEvents[]>(`${config.apiUrl}/events`);
+  }
 }

@@ -10,3 +10,36 @@ ion-content {
 .addBtn {
     padding-right: 10px;
 }
+
+.events {
+    --ion-background-color: rgb(157, 196, 243);
+    border-radius: 30px;
+}
+
+.events-label {
+    --ion-background-color: rgb(157, 196, 243);
+    border-radius: 30px;
+    color: #3F51B5;
+}
+
+.tasks-label {
+    --ion-background-color: rgb(157, 196, 243);
+    border-radius: 30px;
+    color: #3F51B5;
+}
+
+.ion-padding-bottom {
+    padding-bottom: 5px;
+}
+
+.segment {
+    color: #ffcc00;
+    --ion-background-color: linear-gradient(#3F51B5, #2196F3);
+    background-color: rgba(255, 0, 0, 0);
+}
+
+.champ {
+    --ion-background-color: white;
+    border-radius: 30px;
+    margin-top: 5px;
+}

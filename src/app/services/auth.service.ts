@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Tokens } from '../models/tokens';
 import { of, Observable } from 'rxjs';
 import { catchError, mapTo, tap } from 'rxjs/operators';
-import { config } from '../../config/config';
+import { config } from '../config/config';
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +66,10 @@ export class AuthService {
 
   getAccessToken() {
     return localStorage.getItem(this.ACCESS_TOKEN);
+  }
+
+  storeUsername(refreshToken: string) {
+    localStorage.setItem(this.LOGGED_USER, refreshToken);
   }
 
   private doLoginUser(username: string, tokens: Tokens) {

@@ -17,6 +17,7 @@ import { AddEventPage } from './add-event.page';
     ReactiveFormsModule,
     FormsModule
   ],
-  declarations: [AddEventPage]
+  declarations: [AddEventPage],
+  entryComponents: [AddEventPage]
 })
 export class AddEventPageModule {}

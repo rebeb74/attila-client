@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { TabsGuard } from './auth/guards/tabs.guard';
-import { CalendarResolver } from './calendar/calendar.resolver';
 
 
 const routes: Routes = [
@@ -14,10 +13,7 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
     canActivate: [TabsGuard],
-    canLoad: [TabsGuard],
-    resolve: {
-      travel: CalendarResolver
-    }
+    canLoad: [TabsGuard]
   },
 ];
 @NgModule({

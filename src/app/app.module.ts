@@ -1,4 +1,4 @@
-import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -12,7 +12,9 @@ import { AppComponent } from './app.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CalendarComponent } from './calendar/ion2-calendar';
 import { TokenInterceptor } from './token.interceptor';
-import { CalendarResolver } from './calendar/calendar.resolver';
+import { CalendarTasksResolver } from './calendar/calendarTasks.resolver';
+import { CalendarEventsResolver } from './calendar/calendarEvents.resolver';
+import { GetUserResolver } from './settings-page/getUser.resolver';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,7 +40,9 @@ import { CalendarResolver } from './calendar/calendar.resolver';
       useClass: TokenInterceptor,
       multi: true
     },
-    CalendarResolver
+    CalendarEventsResolver,
+    CalendarTasksResolver,
+    GetUserResolver
   ],
   bootstrap: [AppComponent]
 })

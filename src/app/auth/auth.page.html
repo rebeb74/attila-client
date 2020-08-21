@@ -7,12 +7,12 @@
 <ion-content class="ion-padding">
   <form [formGroup]="loginForm" #loginFormValid="ngForm" (ngSubmit)="login()">
     <ion-item class="champ" >
-      <ion-label>Nom d'utilisateur</ion-label>
+      <ion-label position="floating">Nom d'utilisateur</ion-label>
       <ion-input formControlName="username" type="text" placeholder="Attila" required></ion-input>
     </ion-item>
   
     <ion-item class="champ" >
-      <ion-label>Mot de passe</ion-label>
+      <ion-label position="floating">Mot de passe</ion-label>
       <ion-input formControlName="password" type="password" placeholder="********" required></ion-input>
     </ion-item>
     <br>
