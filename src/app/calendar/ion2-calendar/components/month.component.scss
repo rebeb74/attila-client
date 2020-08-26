@@ -6,7 +6,7 @@ $colors: (
   dark: var(--ion-color-dark),
 );
 
-$disabled-color: #668fcc;
+$disabled-color: #a8a8a8;
 
 
 @function bindColors($color-value) {
@@ -78,7 +78,7 @@ $disabled-color: #668fcc;
       background-color: bindColors($background-color);
     }
     &:after {
-      background-color: white;
+      background-color: whitesmoke;
       opacity: 0.25;
     }
   }
@@ -100,7 +100,7 @@ $disabled-color: #668fcc;
       background-color: bindColors($background-color);
     }
     &:after {
-      background-color: white;
+      background-color: whitesmoke;
       opacity: 0.25;
     }
   }
@@ -127,7 +127,7 @@ $disabled-color: #668fcc;
       left: 0;
       right: 0;
       display: block;
-      background-color: white;
+      background-color: whitesmoke;
       opacity: 0.25;
     }
 
@@ -240,7 +240,7 @@ $disabled-color: #668fcc;
   button.days-btn p {
     margin: 0;
     font-size: 1.2em;
-    color: #3F51B5;
+    color: whitesmoke;
     text-align: center;
   }
   button.days-btn[disabled] p {

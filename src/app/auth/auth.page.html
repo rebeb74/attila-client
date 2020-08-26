@@ -1,30 +1,44 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Attila</ion-title>
-  </ion-toolbar>
-</ion-header>
+
 
 <ion-content class="ion-padding">
+  <div class="logo">
+    <!-- <ion-icon color="light" name="sunny"></ion-icon> -->
+    <img src="../../assets/logo.svg">
+  </div>
   <form [formGroup]="loginForm" #loginFormValid="ngForm" (ngSubmit)="login()">
-    <ion-item class="champ" >
-      <ion-label position="floating">Nom d'utilisateur</ion-label>
-      <ion-input formControlName="username" type="text" placeholder="Attila" required></ion-input>
+
+    <ion-item>
+      <ion-icon name="person" size="small" class="label"></ion-icon>
+      <ion-input formControlName="username" color="light" type="text" inputmode="text" placeholder="Identifiant" required></ion-input>
     </ion-item>
+    <div *ngFor="let error of errorMessages.username">
+      <ng-container *ngIf="f.username.hasError(error.type) && (f.username.dirty || f.username.touched)">
+        <small class="error-message">{{error.message}}</small>
+      </ng-container>
+    </div>
   
-    <ion-item class="champ" >
-      <ion-label position="floating">Mot de passe</ion-label>
-      <ion-input formControlName="password" type="password" placeholder="********" required></ion-input>
+    <ion-item>
+      <ion-icon name="lock-closed" class="label" size="small"></ion-icon>
+      <ion-input formControlName="password" color="light" type="password" inputmode="text" placeholder="********" required></ion-input>
     </ion-item>
+    <div *ngFor="let error of errorMessages.password">
+      <ng-container *ngIf="f.password.hasError(error.type) && (f.password.dirty || f.password.touched)">
+        <small class="error-message">{{error.message}}</small>
+      </ng-container>
+    </div>
+
+    <!-- <ion-item lines="none">
+      <ion-button color="light" slot="end" fill="clear">Mot de passe oublié ?</ion-button>
+    </ion-item> -->
+
     <br>
   
-    <ion-button type="submit" [disabled]="!loginFormValid.form.valid" expand="block" class="btn">
-      Connection
+    <ion-button type="submit" [disabled]="!loginFormValid.form.valid" expand="block" color="light" shape="round" fill="outline">
+      Connexion
     </ion-button>
     <br>
     
   </form>
-      <ion-item lines="none" class="champ" >
-        Pas encore enregistré ? <a [routerLink]="['/auth/register']">Inscrivez-vous !</a>
-      </ion-item>
+    <ion-button expand="block" color="primary" shape="round" fill="outline" [routerLink]="['/auth/register']">Inscription</ion-button>
 
-</ion-content>
+  </ion-content>

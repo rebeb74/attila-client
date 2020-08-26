@@ -4,6 +4,15 @@ export interface User {
     email: string;
     username: string;
     password: string;
-    share?: string[];
+    share?: [{
+        id: string,
+        email: string,
+        username: string
+    }];
+    isShared?: [{
+        id: string,
+        email: string,
+        username: string
+    }];
     isAdmin?: false;
 }

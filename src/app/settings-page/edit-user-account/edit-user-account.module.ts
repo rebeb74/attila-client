@@ -15,7 +15,6 @@ import { EditUserAccountPage } from './edit-user-account.page';
     IonicModule,
     EditUserAccountPageRoutingModule,
     ReactiveFormsModule,
-    FormsModule,
   ],
   declarations: [EditUserAccountPage],
   entryComponents: [EditUserAccountPage]

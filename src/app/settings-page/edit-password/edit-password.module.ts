@@ -4,19 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddEventPageRoutingModule } from './add-event-routing.module';
+import { EditPasswordPageRoutingModule } from './edit-password-routing.module';
 
-import { AddEventPage } from './add-event.page';
+import { EditPasswordPage } from './edit-password.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AddEventPageRoutingModule,
-    ReactiveFormsModule,
+    EditPasswordPageRoutingModule,
+    ReactiveFormsModule
   ],
-  declarations: [AddEventPage],
-  entryComponents: [AddEventPage]
+  declarations: [EditPasswordPage]
 })
-export class AddEventPageModule {}
+export class EditPasswordPageModule {}

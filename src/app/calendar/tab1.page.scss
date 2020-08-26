@@ -1,45 +1,33 @@
-ion-toolbar {
-    --background: #3f51b5;
-    --color: #ffcc00;
-}
-
-ion-content {
-    --ion-background-color: linear-gradient(#3F51B5, #2196F3);
-}
-
-.addBtn {
+ion-icon {
     padding-right: 10px;
 }
 
-.events {
-    --ion-background-color: rgb(157, 196, 243);
-    border-radius: 30px;
-}
-
 .events-label {
-    --ion-background-color: rgb(157, 196, 243);
+    --ion-background-color: whitesmoke;
+    font-family: 'Fontastique';
     border-radius: 30px;
-    color: #3F51B5;
+    color: black;
 }
 
 .tasks-label {
-    --ion-background-color: rgb(157, 196, 243);
+    --ion-background-color: whitesmoke;
     border-radius: 30px;
-    color: #3F51B5;
+    color: #8e24aa;
+    font-weight: bolder;
+}
+
+.delete {
+    background-color: rgba(255, 0, 0, 0.5);
+    color: whitesmoke;
+    border-radius: 30px;
+}
+
+.repeat {
+    background-color: rgba(0, 255, 0, 0.5);
+    color: whitesmoke;
+    border-radius: 30px;
 }
 
 .ion-padding-bottom {
     padding-bottom: 5px;
-}
-
-.segment {
-    color: #ffcc00;
-    --ion-background-color: linear-gradient(#3F51B5, #2196F3);
-    background-color: rgba(255, 0, 0, 0);
-}
-
-.champ {
-    --ion-background-color: white;
-    border-radius: 30px;
-    margin-top: 5px;
 }

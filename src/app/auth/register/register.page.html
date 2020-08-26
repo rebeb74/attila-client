@@ -1,31 +1,58 @@
+
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button icon="arrow-back-outline" text=""></ion-back-button>
+      <ion-back-button color="light" icon="arrow-back-outline" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Inscription</ion-title>
+    <ion-title color="light">Inscription</ion-title>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content class="ion-padding">
   <form [formGroup]="registerForm" #registerFormValid="ngForm" (ngSubmit)="register()">
     <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input formControlName="email" type="email" placeholder="exemple@attila.com" required></ion-input>
+      <ion-icon name="mail" color="light" size="small"></ion-icon>
+      <ion-input formControlName="email" type="email" class="champ" inputmode="mail" placeholder="exemple@attila.com" required></ion-input>
     </ion-item>
+    <div *ngFor="let error of errorMessages.email">
+      <ng-container *ngIf="f.email.hasError(error.type) && (f.email.dirty || f.email.touched)">
+        <small class="error-message">{{error.message}}</small>
+      </ng-container>
+    </div>
 
     <ion-item>
-      <ion-label position="floating">Nom d'utilisateur</ion-label>
-      <ion-input formControlName="username" type="text" placeholder="Attila" required></ion-input>
+      <ion-icon name="person" color="light" size="small"></ion-icon>
+      <ion-input formControlName="username" class="champ" type="text" inputmode="text" placeholder="Identifiant" required></ion-input>
     </ion-item>
+    <div *ngFor="let error of errorMessages.username">
+      <ng-container *ngIf="f.username.hasError(error.type) && (f.username.dirty || f.username.touched)" class="ion-padding-start">
+        <small class="error-message">{{error.message}}</small>
+      </ng-container>
+    </div>
   
     <ion-item>
-      <ion-label position="floating">Mot de passe</ion-label>
-      <ion-input formControlName="password" type="password" placeholder="********" required></ion-input>
+      <ion-icon name="lock-closed" color="light" size="small"></ion-icon>
+      <ion-input formControlName="password"  class="champ" type="password" inputmode="text" placeholder="********" required></ion-input>
     </ion-item>
+    <div *ngFor="let error of errorMessages.password">
+      <ng-container *ngIf="f.password.hasError(error.type) && (f.password.dirty || f.password.touched)" class="ion-padding-start">
+        <small class="error-message">{{error.message}}</small>
+      </ng-container>
+    </div>
+    <ion-item>
+      <ion-icon name="lock-closed" color="light" size="small"></ion-icon>
+      <ion-input formControlName="passwordConfirm"  class="champ" type="password" inputmode="text" placeholder="Confirmez votre mot de passe" required></ion-input>
+    </ion-item>
+    <div *ngFor="let error of errorMessages.passwordConfirm">
+      <ng-container *ngIf="f.passwordConfirm.hasError(error.type) && (f.passwordConfirm.dirty || f.passwordConfirm.touched)" class="ion-padding-start">
+        <small class="error-message">{{error.message}}</small>
+      </ng-container>
+    </div>
+    <ion-text *ngIf="!confirmPasswordValid" color="danger" class="ion-padding-start" size="large">Mots de passes différents</ion-text>
     <br>
   
-    <ion-button type="submit" [disabled]="!registerFormValid.form.valid" expand="block">
+    <ion-button type="submit" [disabled]="!registerFormValid.form.valid" expand="block" color="light" shape="round" fill="outline">
       C'est parti !
     </ion-button>
 

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Tokens } from '../models/tokens';
 import { of, Observable } from 'rxjs';
 import { catchError, mapTo, tap } from 'rxjs/operators';
 import { config } from '../config/config';
+import { Router } from '@angular/router';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +13,17 @@ import { config } from '../config/config';
 export class AuthService {
   private readonly ACCESS_TOKEN = 'ACCESS_TOKEN';
   private readonly REFRESH_TOKEN = 'REFRESH_TOKEN';
-  private readonly LOGGED_USER = 'LOGGED_USER';
   private loggedUser: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
-  register(user: { email: string, username: string, password: string }): Observable<boolean> {
+  register(user: { email: string, username: string, password: string }): Observable<boolean | number> {
     return this.http.post<any>(`${config.apiUrl}/register`, user)
       .pipe(
-        mapTo(true),
-        catchError(error => {
+        mapTo(201),
+        catchError((error: HttpErrorResponse) => {
           console.log('error', error.error);
-          return of(false);
+          return of(error.status);
         }));
   }
 
@@ -41,14 +42,15 @@ export class AuthService {
 
   logout() {
     return this.http.post<any>(`${config.apiUrl}/logout`, {
-      refreshToken: this.getRefreshToken()
-    }).pipe(
-      tap(() => this.doLogoutUser()),
-      mapTo(true),
-      catchError(error => {
-        console.log('error', error.error);
-        return of(false);
-      }));
+      'token': this.getRefreshToken()
+    })
+      .pipe(
+        tap(() => this.doLogoutUser()),
+        mapTo(true),
+        catchError(error => {
+          console.log('error', error.error);
+          return of(false);
+        }));
   }
 
   isLoggedIn() {
@@ -68,8 +70,23 @@ export class AuthService {
     return localStorage.getItem(this.ACCESS_TOKEN);
   }
 
-  storeUsername(refreshToken: string) {
-    localStorage.setItem(this.LOGGED_USER, refreshToken);
+  mustMatch(controlName: string, matchingControlName: string) {
+    return (formGroup: FormGroup) => {
+      const control = formGroup.controls[controlName];
+      const matchingControl = formGroup.controls[matchingControlName];
+
+      if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+        // return if another validator has already found an error on the matchingControl
+        return;
+      }
+
+      // set error on matchingControl if validation fails
+      if (control.value !== matchingControl.value) {
+        matchingControl.setErrors({ mustMatch: true });
+      } else {
+        matchingControl.setErrors(null);
+      }
+    };
   }
 
   private doLoginUser(username: string, tokens: Tokens) {
@@ -80,6 +97,7 @@ export class AuthService {
   private doLogoutUser() {
     this.loggedUser = null;
     this.removeTokens();
+    window.location.href = '/auth';
   }
 
   private getRefreshToken() {
@@ -97,12 +115,10 @@ export class AuthService {
   private storeTokens(tokens: Tokens) {
     localStorage.setItem(this.ACCESS_TOKEN, tokens.accessToken);
     localStorage.setItem(this.REFRESH_TOKEN, tokens.refreshToken);
-    localStorage.setItem(this.LOGGED_USER, this.loggedUser);
   }
 
   private removeTokens() {
     localStorage.removeItem(this.ACCESS_TOKEN);
     localStorage.removeItem(this.REFRESH_TOKEN);
-    localStorage.removeItem(this.LOGGED_USER);
   }
 }

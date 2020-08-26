@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header class="header">
   <ion-toolbar>
     <ion-title>
       Réglages
@@ -6,27 +6,50 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-item>
-    <h3>Paramètres compte</h3>
-  </ion-item>
-
+<ion-content class="ion-padding">
   <form [formGroup]="userAccountForm">
-
+    
     <ion-item>
-      <ion-label position="floating">E-Mail</ion-label>
-      <ion-input required formControlName="email" type="email"></ion-input>
+      <ion-label position="floating" class="label">E-Mail</ion-label>
+      <ion-input required formControlName="email" type="email" class="champ"></ion-input>
     </ion-item>
-
+    
     <ion-item>
-      <ion-label position="floating">Nom d'utilisateur</ion-label>
-      <ion-input required formControlName="username" type="text"></ion-input>
+      <ion-label position="floating" class="label">Nom d'utilisateur</ion-label>
+      <ion-input required formControlName="username" type="text" class="champ"></ion-input>
     </ion-item>
-
-    <ion-button block color="primary" type="button" (click)="openModal()" expand="block">
-      Modifier
-    </ion-button>
 
   </form>
+  
+    <ion-button expand="block" color="light" shape="round" fill="outline" type="button" (click)="openModalParameters()">
+      Modifier compte
+    </ion-button>
+  
+
+  <ion-button expand="block" color="light" shape="round" fill="outline" type="button" (click)="openModalPassword()">
+    <ion-icon name="lock-open" color="light" size="small"></ion-icon>
+    Modifier mot de passe
+    <ion-icon name="lock-open" color="light" size="small"></ion-icon>
+  </ion-button>
+
+  <ion-button expand="block" color="light" shape="round" fill="outline" type="button" (click)="logout()">
+    <ion-icon name="lock-closed" color="light" size="small"></ion-icon>
+    Déconnexion
+    <ion-icon name="lock-closed" color="light" size="small"></ion-icon>
+  </ion-button>
+
+  <ion-button expand="block" color="light" shape="round" fill="outline" type="button" (click)="openModalShare()">
+    <ion-icon name="share-social" color="light" size="small"></ion-icon>
+    Ajouter partage
+    <ion-icon name="share-social" color="light" size="small"></ion-icon>
+  </ion-button>
+  
+  <ion-list *ngIf="!emptyShare" >
+    <h5 class="label">Partages :</h5>
+    <ion-item *ngFor="let userShare of currentUser.share" class="label">
+      {{userShare.username}}
+      <ion-icon slot="end" class="label" name="close-circle" (click)="deleteShare(userShare)"></ion-icon>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

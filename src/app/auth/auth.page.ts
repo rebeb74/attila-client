@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
@@ -11,12 +11,16 @@ import { Router } from '@angular/router';
 })
 export class AuthPage implements OnInit {
   loginForm: FormGroup;
-  user: User = {
-    email: '',
-    username: '',
-    password: ''
-  };
 
+
+  public errorMessages = {
+    username: [
+      { type: 'required', message: 'Identifiant requis' },
+    ],
+    password: [
+      { type: 'required', message: 'Mot de passe requis' },
+    ]
+  };
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
@@ -25,8 +29,14 @@ export class AuthPage implements OnInit {
 
   createForm() {
     this.loginForm = this.fb.group({
-      username: '',
-      password: ''
+      username: new FormControl(
+        '',
+        Validators.compose([
+          Validators.required])),
+      password: new FormControl(
+        '',
+        Validators.compose([
+          Validators.required])),
     });
   }
 
@@ -39,10 +49,11 @@ export class AuthPage implements OnInit {
         password: this.f.password.value
       }
     )
-    .subscribe(success => {
-      if (success) {
-        this.router.navigate(['/tabs/tab1']);
-      }
-    });
+      .subscribe(success => {
+        if (success) {
+          this.router.navigate(['/tabs/tab1']);
+          this.loginForm.reset(); // reset inputs
+        }
+      });
   }
 }

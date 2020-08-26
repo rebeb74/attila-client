@@ -45,12 +45,20 @@ export class ApiService {
     return this.http.get<Task[]>(`${config.apiUrl}/tasks`);
   }
 
+  getUserByUsername(username: string){
+    return this.http.get<User>(`${config.apiUrl}/user/` + username);
+  }
+
   updateTaskById(id, task: Task){
     return this.http.put<Task[]>(`${config.apiUrl}/tasks/` + id, task);
   }
 
   updateUserById(id, user: User){
     return this.http.put<User>(`${config.apiUrl}/users/` + id, user);
+  }
+
+  updateUserIsSharedById(id, user: User){
+    return this.http.put<User>(`${config.apiUrl}/user/` + id, user);
   }
 
   deleteEventById(id){
@@ -63,5 +71,9 @@ export class ApiService {
 
   getAllEvents(): Observable<AllEvents[]> {
     return this.http.get<AllEvents[]>(`${config.apiUrl}/events`);
+  }
+
+  updatePassword(data){
+    return this.http.put<any>(`${config.apiUrl}/password`, data);
   }
 }

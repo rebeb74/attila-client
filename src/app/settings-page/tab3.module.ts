@@ -7,18 +7,21 @@ import { Tab3Page } from './tab3.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { Tab3PageRoutingModule } from './tab3-routing.module';
-import { EditUserAccountPage } from './edit-user-account/edit-user-account.page';
+import { EditUserAccountPageModule } from './edit-user-account/edit-user-account.module';
+import { EditPasswordPageModule } from './edit-password/edit-password.module';
+import { EditSharePageModule } from './edit-share/edit-share.module';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
-    FormsModule,
     ExploreContainerComponentModule,
     Tab3PageRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    EditUserAccountPage,
+    EditUserAccountPageModule,
+    EditPasswordPageModule,
+    EditSharePageModule,
     RouterModule.forChild([{ path: '', component: Tab3Page }]),
   ],
   declarations: [Tab3Page]

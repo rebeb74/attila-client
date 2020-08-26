@@ -8,21 +8,19 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form [formGroup]="userEditForm" (ngSubmit)="onSubmit()">
-
-    <ion-item>
-      <ion-label position="floating" class="label">E-Mail</ion-label>
-      <ion-input formControlName="email" type="email" class="champ"></ion-input>
-    </ion-item>
+  <form [formGroup]="shareEditForm" (ngSubmit)="onSubmit()">
 
     <ion-item>
       <ion-label position="floating" class="label">Nom d'utilisateur</ion-label>
-      <ion-input formControlName="username" type="text" class="champ"></ion-input>
+      <ion-input formControlName="username" type="text" class="champ" placeholder="Ex: Attila"></ion-input>
     </ion-item>
 
-    <ion-button expand="block" color="light" shape="round" fill="outline"type="submit" [disabled]="userEditForm.invalid">
-      Enregistrer
+    <ion-button expand="block" color="light" shape="round" fill="outline"type="submit" [disabled]="shareEditForm.invalid">
+      ajouter
     </ion-button>
-
+  
   </form>
+
+  <h5 class="label">L'utilisateur partagé doit aussi vous ajouter en partage pour que le lien s'active !</h5>¨
+  
 </ion-content>

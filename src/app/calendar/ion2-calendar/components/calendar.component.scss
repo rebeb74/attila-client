@@ -4,7 +4,7 @@
   padding: 10px 20px;
   box-sizing: border-box;
   display: inline-block;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 30px;
   width: 100%;
 
@@ -28,7 +28,7 @@
 
     .back,
     .forward {
-      color: #3F51B5;
+      color: white;
     }
 
     .back {
@@ -52,7 +52,7 @@
       width: 100%;
       text-align: center;
       line-height: 32px;
-      color: #3F51B5;
+      color: white;
 
       .arrow-dropdown {
         margin-left: 5px;

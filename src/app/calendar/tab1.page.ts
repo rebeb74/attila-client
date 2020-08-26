@@ -1,11 +1,12 @@
 import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
 import { CalendarComponentOptions, CalendarComponent, DayConfig } from './ion2-calendar';
 import * as moment from 'moment';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd, RouterEvent } from '@angular/router';
 import { CalendarService } from '../services/calendar.service';
 import { Event, Task } from '../models/event';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../services/api.service';
+import { tap, filter, pairwise, startWith } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,8 @@ export class Tab1Page implements OnInit {
   optionsRange: CalendarComponentOptions;
   dayEvents = [];
   dayTasks = [];
+  currentMonthView: string;
+  monthSelectDay: string;
 
   constructor(
     private calService: CalendarService,
@@ -39,10 +42,12 @@ export class Tab1Page implements OnInit {
     private router: Router
   ) {
     moment.locale('fr-ch');
-    router.events.subscribe(val => {
-      if (val) {
+    this.router.events.pipe(
+      filter((events: RouterEvent) => events instanceof NavigationEnd),
+    ).subscribe((val) => {
+      if (val.url === '/tabs/tab1') {
         this.refresh();
-        this.showEventsList();
+        this.showEventsList(this.selectedDay);
       }
     });
   }
@@ -96,9 +101,24 @@ export class Tab1Page implements OnInit {
   }
 
   onChange($event) {
-    this.selectedDay = new Date(moment($event.time).toString());
+    this.selectedDay = $event._d;
     this.calService.setSelectedDay(this.selectedDay);
-    this.showEventsList();
+    this.currentMonthView = moment($event._d).format('MMMM YYYY');
+    console.log('this.currentMonthView', this.currentMonthView);
+    this.showEventsList(this.selectedDay);
+    console.log('onChange', $event);
+    console.log('selectedDay', this.selectedDay);
+  }
+
+  onMonthChange($events) {
+    this.monthSelectDay = $events.newMonth.dateObj;
+    if (moment($events.newMonth.dateObj).format('MMMM YYYY') !== this.currentMonthView) {
+      this.showEventsList(this.monthSelectDay);
+      this.refresh();
+    } else {
+      this.showEventsList(this.selectedDay);
+      this.refresh();
+    }
   }
 
   addDaysConfig(data) {
@@ -118,16 +138,16 @@ export class Tab1Page implements OnInit {
     this.addDaysConfig(this.userEvents);
   }
 
-  showEventsList() {
+  showEventsList(day) {
     this.dayEvents = [];
     this.dayTasks = [];
     this.userEvents.forEach(e => {
-      if (new Date(e.startTime).toString().substring(4, 15) === new Date(this.selectedDay).toString().substring(4, 15)) {
+      if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
         this.dayEvents.push(e);
       }
     });
     this.userTasks.forEach(e => {
-      if (new Date(e.startTime).toString().substring(4, 15) === new Date(this.selectedDay).toString().substring(4, 15)) {
+      if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
         this.dayTasks.push(e);
       }
     });
@@ -144,7 +164,7 @@ export class Tab1Page implements OnInit {
         this.updateDaysConfig();
       }
     });
-    this.showEventsList();
+    this.showEventsList(this.selectedDay);
     this.refresh();
   }
 
@@ -159,7 +179,7 @@ export class Tab1Page implements OnInit {
         this.updateDaysConfig();
       }
     });
-    this.showEventsList();
+    this.showEventsList(this.selectedDay);
     this.refresh();
   }
 
@@ -198,7 +218,7 @@ export class Tab1Page implements OnInit {
   }
 
   onEventClick(eventId) {
-    
+
   }
 
 }

@@ -15,6 +15,7 @@ import { TokenInterceptor } from './token.interceptor';
 import { CalendarTasksResolver } from './calendar/calendarTasks.resolver';
 import { CalendarEventsResolver } from './calendar/calendarEvents.resolver';
 import { GetUserResolver } from './settings-page/getUser.resolver';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +26,8 @@ import { GetUserResolver } from './settings-page/getUser.resolver';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
     StatusBar,

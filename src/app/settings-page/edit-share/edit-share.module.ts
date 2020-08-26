@@ -4,19 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddEventPageRoutingModule } from './add-event-routing.module';
+import { EditSharePageRoutingModule } from './edit-share-routing.module';
 
-import { AddEventPage } from './add-event.page';
+import { EditSharePage } from './edit-share.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AddEventPageRoutingModule,
-    ReactiveFormsModule,
+    EditSharePageRoutingModule,
+    ReactiveFormsModule
   ],
-  declarations: [AddEventPage],
-  entryComponents: [AddEventPage]
+  declarations: [EditSharePage]
 })
-export class AddEventPageModule {}
+export class EditSharePageModule {}

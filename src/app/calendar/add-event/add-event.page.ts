@@ -31,7 +31,7 @@ export class AddEventPage implements OnInit {
       user: '',
       title: '',
       description: '',
-      startTime: this.calService.getSelectedDay(),
+      startTime: this.calService.getSelectedDay().toISOString(),
       startHour: '08:00',
       place: '',
       repeat: '0',
