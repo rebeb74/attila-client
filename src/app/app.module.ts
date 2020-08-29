@@ -14,7 +14,7 @@ import { CalendarComponent } from './calendar/ion2-calendar';
 import { TokenInterceptor } from './token.interceptor';
 import { CalendarTasksResolver } from './calendar/calendarTasks.resolver';
 import { CalendarEventsResolver } from './calendar/calendarEvents.resolver';
-import { GetUserResolver } from './settings-page/getUser.resolver';
+import { GetUserResolver } from './getUser.resolver';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({

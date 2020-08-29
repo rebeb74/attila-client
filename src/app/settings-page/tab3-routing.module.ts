@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Tab3Page } from './tab3.page';
-import { GetUserResolver } from './getUser.resolver';
+import { GetUserResolver } from '../getUser.resolver';
 
 const routes: Routes = [
   {

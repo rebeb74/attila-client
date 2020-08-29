@@ -80,7 +80,7 @@ export class RegisterPage implements OnInit {
   }
 
   validConfirmPassword() {
-    this.passwordConfirm$ = this.registerForm.controls['passwordConfirm'].valueChanges;
+    this.passwordConfirm$ = this.registerForm.get('passwordConfirm').valueChanges;
     this.passwordConfirm$
       .subscribe((data) => {
         if (this.f.password.value !== data) {

@@ -13,7 +13,7 @@ export interface Event extends AllEvents{
 }
 
 export interface Task extends AllEvents{
-    repeat?: number;
-    altern?: boolean;
+    repeat?: string;
+    altern?: string;
 }
 

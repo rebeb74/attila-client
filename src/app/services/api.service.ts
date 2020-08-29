@@ -41,16 +41,36 @@ export class ApiService {
     return this.http.get<Event[]>(`${config.apiUrl}/events`);
   }
 
+  getEventById(id: string){
+    return this.http.get<Event>(`${config.apiUrl}/events/` + id);
+  }
+
   getTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${config.apiUrl}/tasks`);
+  }
+
+  getTaskById(id: string){
+    return this.http.get<Task>(`${config.apiUrl}/tasks/` + id);
   }
 
   getUserByUsername(username: string){
     return this.http.get<User>(`${config.apiUrl}/user/` + username);
   }
 
+  getShareEventsByUserId(id: string){
+    return this.http.get<Event[]>(`${config.apiUrl}/share-events/` + id);
+  }
+
+  getShareTasksByUserId(id: string){
+    return this.http.get<Task[]>(`${config.apiUrl}/share-tasks/` + id);
+  }
+
   updateTaskById(id, task: Task){
     return this.http.put<Task[]>(`${config.apiUrl}/tasks/` + id, task);
+  }
+
+  updateEventById(id, event: Event){
+    return this.http.put<Event[]>(`${config.apiUrl}/events/` + id, event);
   }
 
   updateUserById(id, user: User){

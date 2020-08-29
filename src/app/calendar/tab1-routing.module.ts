@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { Tab1Page } from './tab1.page';
 import { CalendarTasksResolver } from './calendarTasks.resolver';
 import { CalendarEventsResolver } from './calendarEvents.resolver';
+import { GetUserResolver } from '../getUser.resolver';
 
 const routes: Routes = [
   {
@@ -10,7 +11,8 @@ const routes: Routes = [
     component: Tab1Page,
     resolve: {
       event: CalendarEventsResolver,
-      task: CalendarTasksResolver
+      task: CalendarTasksResolver,
+      user: GetUserResolver
     }
   },
   {

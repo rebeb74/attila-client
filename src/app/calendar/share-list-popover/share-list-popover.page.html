@@ -1,0 +1,4 @@
+<ion-list>
+  <ion-list-header>Calendriers</ion-list-header>
+    <ion-item button *ngFor="let sharedUser of shareList" (click)="dismissPopover(sharedUser.username)">{{sharedUser.username}}</ion-item>
+</ion-list>

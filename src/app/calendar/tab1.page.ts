@@ -6,7 +6,12 @@ import { CalendarService } from '../services/calendar.service';
 import { Event, Task } from '../models/event';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../services/api.service';
-import { tap, filter, pairwise, startWith } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
+import { User } from '../models/user';
+import { PopoverController, ModalController } from '@ionic/angular';
+import { ShareListPopoverPage } from './share-list-popover/share-list-popover.page';
+import { OverlayEventDetail } from '@ionic/core';
+import { EditEventPage } from './edit-event/edit-event.page';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +28,11 @@ export class Tab1Page implements OnInit {
   dateRange: { from: string; to: string; };
   date: string;
   type: 'string'; // 'string' | 'js-date' | 'moment' | 'time' | 'object'
-  selectedDay: Date;
+  selectedDay = new Date();
   userEvents: Event[];
   userTasks: Task[];
+  shareUserEvents: Event[];
+  shareUserTasks: Task[];
   daysConfig: DayConfig[] = [];
   daysConfigSubcription: Subscription;
   optionsRangeSubcription: Subscription;
@@ -34,14 +41,21 @@ export class Tab1Page implements OnInit {
   dayTasks = [];
   currentMonthView: string;
   monthSelectDay: string;
+  currentUser: User;
+  shareList = [];
+  currentCalUsername: string;
 
   constructor(
     private calService: CalendarService,
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController,
+    public popoverController: PopoverController
   ) {
+    // Moment locale configuration
     moment.locale('fr-ch');
+    // Refresh When navigate to this page
     this.router.events.pipe(
       filter((events: RouterEvent) => events instanceof NavigationEnd),
     ).subscribe((val) => {
@@ -53,9 +67,43 @@ export class Tab1Page implements OnInit {
   }
 
   ngOnInit(): void {
+    // Get Current User
+    this.getCurrentUser();
+    // Configure Share List
+    this.setShareList();
+    // Configure Calendar
     this.initOptionsRange();
     this.loadEvents();
     this.loadTasks();
+  }
+
+  getCurrentUser() {
+    this.route.data.subscribe((data: { user: User }) => {
+      this.currentUser = data.user;
+      console.log(this.currentUser);
+    });
+  }
+
+  setShareList() {
+    this.shareList.push({
+      userId: this.currentUser._id,
+      username: this.currentUser.username,
+      email: this.currentUser.email
+    });
+    this.calService.setCurrentCalUsername(this.shareList[0].username);
+    this.currentCalUsername = this.shareList[0].username;
+    this.currentUser.share.forEach((shareUser) => {
+      this.currentUser.isShared.forEach((isSharedUser) => {
+        if (shareUser.username === isSharedUser.username) {
+          this.shareList.push({
+            userId: shareUser.id,
+            username: shareUser.username,
+            email: shareUser.email
+          });
+        }
+      });
+    });
+    this.calService.setShareList(this.shareList);
   }
 
   initOptionsRange() {
@@ -76,6 +124,34 @@ export class Tab1Page implements OnInit {
       this.userEvents = data.event;
       this.addDaysConfig(data.event);
     });
+    console.log('this.userEvents', this.userEvents);
+  }
+
+  loadShareUserEvents(shareUser) {
+    this.apiService.getShareEventsByUserId(shareUser).subscribe(
+      (success) => {
+        console.log('resultat requete', success);
+        this.shareUserEvents = success;
+        this.daysConfig = [];
+        this.addDaysConfig(success);
+      },
+      (error) => {
+        console.log('error requete', error);
+
+      });
+  }
+
+  loadShareUserTasks(shareUser) {
+    this.apiService.getShareTasksByUserId(shareUser).subscribe(
+      (success) => {
+        console.log('resultat requete', success);
+        this.shareUserTasks = success;
+        this.addDaysConfig(success);
+      },
+      (error) => {
+        console.log('error requete', error);
+
+      });
   }
 
   loadTasks() {
@@ -83,6 +159,7 @@ export class Tab1Page implements OnInit {
       this.userTasks = data.task;
       this.addDaysConfig(data.task);
     });
+    console.log('this.userTasks', this.userTasks);
   }
 
   refresh() {
@@ -100,14 +177,45 @@ export class Tab1Page implements OnInit {
     event.target.complete();
   }
 
+  async presentPopoverShareList() {
+    const popover = await this.popoverController.create({
+      component: ShareListPopoverPage,
+      translucent: true,
+      componentProps: { shareList: this.shareList }
+    });
+
+    popover.onDidDismiss().then((detail: OverlayEventDetail) => {
+      if (detail !== null) {
+        this.shareList.forEach((shareUser) => {
+          if (shareUser.username === detail.data) {
+            this.daysConfig = [];
+            this.calService.setCurrentCalUsername(shareUser.username);
+            this.currentCalUsername = shareUser.username;
+            if (shareUser.username === this.currentUser.username) {
+              this.loadEvents();
+              this.loadTasks();
+              this.refresh();
+            } else {
+              this.loadShareUserEvents(shareUser.userId);
+              this.loadShareUserTasks(shareUser.userId);
+              setTimeout(() => {
+                this.refresh();
+              }, 1000);
+            }
+          }
+        });
+      }
+    });
+    await popover.present();
+  }
+
   onChange($event) {
+    this.dayEvents = [];
+    this.dayTasks = [];
     this.selectedDay = $event._d;
     this.calService.setSelectedDay(this.selectedDay);
     this.currentMonthView = moment($event._d).format('MMMM YYYY');
-    console.log('this.currentMonthView', this.currentMonthView);
     this.showEventsList(this.selectedDay);
-    console.log('onChange', $event);
-    console.log('selectedDay', this.selectedDay);
   }
 
   onMonthChange($events) {
@@ -132,25 +240,47 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  updateDaysConfig() {
+  updateDaysConfig(userTasks, userEvents) {
+    console.log('this.userTasks2', [...this.userTasks]);
     this.daysConfig = [];
-    this.addDaysConfig(this.userTasks);
-    this.addDaysConfig(this.userEvents);
+    this.addDaysConfig(userTasks);
+    this.addDaysConfig(userEvents);
   }
 
   showEventsList(day) {
     this.dayEvents = [];
     this.dayTasks = [];
-    this.userEvents.forEach(e => {
-      if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
-        this.dayEvents.push(e);
+    let isCurrentUser = false;
+    if (this.currentUser.username === this.currentCalUsername) {
+      isCurrentUser = true;
+    }
+    if (isCurrentUser) {
+      this.userEvents.forEach(e => {
+        if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
+          this.dayEvents.push(e);
+        }
+      });
+      this.userTasks.forEach(e => {
+        if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
+          this.dayTasks.push(e);
+        }
+      });
+    } else {
+      if (this.shareUserEvents !== undefined) {
+        this.shareUserEvents.forEach(e => {
+          if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
+            this.dayEvents.push(e);
+          }
+        });
       }
-    });
-    this.userTasks.forEach(e => {
-      if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
-        this.dayTasks.push(e);
+      if (this.shareUserTasks !== undefined) {
+        this.shareUserTasks.forEach(e => {
+          if (new Date(e.startTime).toString().substring(4, 15) === new Date(day).toString().substring(4, 15)) {
+            this.dayTasks.push(e);
+          }
+        });
       }
-    });
+    }
   }
 
   deleteEvent(id) {
@@ -161,7 +291,7 @@ export class Tab1Page implements OnInit {
         // update userEvents
         this.userEvents.splice(index, 1);
         // update daysConfig
-        this.updateDaysConfig();
+        this.updateDaysConfig(this.userTasks, this.userEvents);
       }
     });
     this.showEventsList(this.selectedDay);
@@ -176,7 +306,7 @@ export class Tab1Page implements OnInit {
         // update userEvents
         this.userTasks.splice(index, 1);
         // update daysConfig
-        this.updateDaysConfig();
+        this.updateDaysConfig(this.userTasks, this.userEvents);
       }
     });
     this.showEventsList(this.selectedDay);
@@ -187,16 +317,6 @@ export class Tab1Page implements OnInit {
     this.userTasks.forEach(e => {
       if (e._id === id) {
         const newDate = new Date(moment(new Date(e.startTime)).add(e.repeat, 'week').toString());
-
-        // TODO altern user
-        // if (e.altern) {
-        //   if (e.user === 'Clémentine') {
-        //     e.user = 'Bertrand';
-        //   } else {
-        //     e.user = 'Clémentine';
-        //   }
-        // }
-
         // Update database
         this.apiService.updateTaskById(
           id,
@@ -205,20 +325,92 @@ export class Tab1Page implements OnInit {
             userId: e.userId
           }
         );
-
         // update allEvents
         e.startTime = newDate;
 
         // update _daysConfig
-        this.updateDaysConfig();
+        this.updateDaysConfig(this.userTasks, this.userEvents);
       }
     });
-    this.showEventsList();
+    this.showEventsList(this.selectedDay);
     this.refresh();
   }
 
-  onEventClick(eventId) {
+  onEventClick(id, typeEvent) {
+    if (this.currentCalUsername === this.currentUser.username) {
+      if (typeEvent === 'rdv') {
+        this.userEvents.forEach((event) => {
+          if (event._id === id) {
+            this.openModalEditEvent(event, undefined);
+          }
+        });
+      } else if (typeEvent === 'task') {
+        this.userTasks.forEach((task) => {
+          if (task._id === id) {
+            this.openModalEditEvent(undefined, task);
+          }
+        });
+      }
+    }
+  }
 
+  async openModalEditEvent(event, task) {
+    const modal: HTMLIonModalElement =
+      await this.modalController.create({
+        component: EditEventPage,
+        componentProps: {
+          event,
+          task,
+          currentCalUsername: this.currentCalUsername,
+          shareList: this.shareList
+        }
+      });
+    modal.onDidDismiss().then((detail: OverlayEventDetail) => {
+      if (detail !== null) {
+        console.log('The result:', detail.data);
+        const typeEvent = detail.data[1].typeEvent;
+        if (typeEvent === 'rdv') {
+          const editedEvent = detail.data[0];
+          this.apiService.updateEventById(editedEvent._id, editedEvent).subscribe(
+            (success) => {
+              this.userEvents.forEach((e, index) => {
+                if (e._id === editedEvent._id) {
+                  this.userTasks.splice(index, 1);
+                }
+              });
+              this.userTasks.push(editedEvent);
+              console.log('this.userEvents', this.userEvents);
+              this.updateDaysConfig(this.userTasks, this.userEvents);
+              this.showEventsList(this.selectedDay);
+              this.refresh();
+            },
+            (error) => {
+              console.log('error', error);
+            }
+          );
+        } else if (typeEvent === 'task') {
+          const editedTask = detail.data[0];
+          this.apiService.updateTaskById(editedTask._id, editedTask).subscribe(
+            (success) => {
+              this.userTasks.forEach((t, index) => {
+                if (t._id === editedTask._id) {
+                  this.userTasks.splice(index, 1);
+                }
+              });
+              this.userTasks.push(editedTask);
+              console.log('this.userTasks3', this.userTasks);
+              this.updateDaysConfig(this.userTasks, this.userEvents);
+              this.showEventsList(this.selectedDay);
+              this.refresh();
+            },
+            (error) => {
+              console.log('error', error);
+            }
+          );
+        }
+      }
+    });
+    await modal.present();
   }
 
 }

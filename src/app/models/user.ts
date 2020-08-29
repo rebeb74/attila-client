@@ -1,6 +1,5 @@
 export interface User {
     _id?: string;
-    isLoggedIn?: boolean;
     email: string;
     username: string;
     password: string;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Subscription } from 'rxjs';
 import { DayConfig, CalendarComponentOptions } from '../calendar/ion2-calendar';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,9 @@ export class CalendarService {
   private daysConfig: DayConfig[] = [];
   daysConfigSubject = new Subject<DayConfig[]>();
   daysConfigSubcription: Subscription;
+  currentCalUsername: string;
+  shareList: [];
+
   private optionsRange: CalendarComponentOptions = {
     daysConfig: this.daysConfig,
     monthFormat: 'MMMM YYYY',
@@ -39,11 +43,27 @@ export class CalendarService {
   }
 
   setSelectedDay(selectedDay) {
-    this.selectedDay = selectedDay;
+    this.selectedDay = new Date(moment(selectedDay).format());
   }
 
   getSelectedDay() {
     return this.selectedDay;
+  }
+
+  setCurrentCalUsername(username) {
+    this.currentCalUsername = username;
+  }
+
+  getCurrentCalUsername() {
+    return this.currentCalUsername;
+  }
+
+  setShareList(shareList) {
+    this.shareList = shareList;
+  }
+
+  getShareList() {
+    return this.shareList;
   }
 
 }

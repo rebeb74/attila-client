@@ -1,7 +1,7 @@
 <ion-header class="header">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="light" icon="arrow-back-outline" text=""></ion-back-button>
+      <ion-button (click)="myDismiss()" color="light"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>Ajouter évènement</ion-title>
   </ion-toolbar>
@@ -11,16 +11,7 @@
 
   <div class="ion-padding">
 
-    <ion-segment (ionChange)="typeEventChange($event)" value="task" class="segment" name="typeEvent">
-      <ion-segment-button value="task">
-        <ion-label>Tâche</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="rdv">
-        <ion-label>Rendez-vous</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-
-    <form [formGroup]="addEventForm" #formDirective="ngForm" (ngSubmit)="createEvent(formDirective)">
+    <form [formGroup]="editEventForm" #formDirective="ngForm" (ngSubmit)="myDismiss(formDirective)">
 
       <ion-item class="champ">
         <ion-label position="floating" class="label">Titre</ion-label>
@@ -70,16 +61,16 @@
         </ion-select>
       </ion-item>
 
-      <ion-item *ngIf="typeEvent === 'task' && addEventForm.controls['repeat'].value !== 0" class="champ">
+      <ion-item *ngIf="typeEvent === 'task' && editEventForm.controls['repeat'].value !== 0" class="champ">
         <ion-label position="floating" class="label">Alterner</ion-label>
         <ion-select formControlName="altern" okText="Ok" cancelText="Annuler"
           interface="action-sheet" class="custom-options" class="champ">
-          <ion-select-option  *ngFor="let shareUser of shareList" [value]="shareUser.username">{{shareUser.username}}</ion-select-option>
+          <ion-select-option  *ngFor="let shareUser of shareListTemp" [value]="shareUser.username">{{shareUser.username}}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-button expand="block" color="light" shape="round" fill="outline" type="submit"
-        [disabled]="!formDirective.form.valid">Ajouter</ion-button>
+        [disabled]="!formDirective.form.valid">Modifier</ion-button>
 
     </form>
   </div>
