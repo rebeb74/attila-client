@@ -82,7 +82,7 @@ export class EditEventPage implements OnInit {
     }
   }
 
-  async myDismiss(formDirective: FormGroupDirective) {
+  async myDismiss() {
     let editedEvent: Array<object>;
     if (this.typeEvent === 'rdv'){
       editedEvent = [

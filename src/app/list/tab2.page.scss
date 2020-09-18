@@ -1,0 +1,33 @@
+
+ion-item {
+    --ion-background-color: transparent !important;
+  }
+  
+  ion-icon {
+    padding: 10px;
+  }
+  
+  ion-back-button{
+    padding-left: 10px;
+    width: 25px;
+  }
+  
+  .label{
+    color: thistle;
+  }
+  
+  .champ{
+    color: whitesmoke;
+  }
+  
+  .segment{
+      color:whitesmoke;
+      --ion-background-color: #311b92;
+      background-color: rgba(255, 0, 0, 0);
+    }
+  
+    .add{
+      --color: whitesmoke;
+      --background: #8e24aa;
+    }
+    

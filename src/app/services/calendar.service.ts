@@ -63,6 +63,7 @@ export class CalendarService {
   }
 
   getShareList() {
+    console.log('this.shareList', this.shareList);
     return this.shareList;
   }
 

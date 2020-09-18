@@ -1,3 +1,3 @@
 export const config = {
-  apiUrl: 'https://localhost:3000/api'
+  apiUrl: 'https://api.codeattila.ch/api'
 };

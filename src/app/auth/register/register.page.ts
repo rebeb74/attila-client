@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -39,6 +40,7 @@ export class RegisterPage implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private toastService: ToastService,
     public toastController: ToastController
   ) { }
 
@@ -115,19 +117,9 @@ export class RegisterPage implements OnInit {
               }
             });
         } else if (res === 409) {
-          this.presentToast();
+          this.toastService.presentErrorRegisterToast();
           console.log('Identifiant ou Email déjà utilisé.');
         }
       });
-  }
-
-  async presentToast() {
-    const toast = await this.toastController.create({
-      message: 'Identifiant ou Email déjà utilisé.',
-      animated: true,
-      color: 'danger',
-      translucent: true
-    });
-    toast.present();
   }
 }

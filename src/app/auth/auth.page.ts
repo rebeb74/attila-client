@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../services/toast.service';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth',
@@ -21,7 +22,12 @@ export class AuthPage implements OnInit {
       { type: 'required', message: 'Mot de passe requis' },
     ]
   };
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private toastService: ToastService,
+    public toastController: ToastController) { }
 
   ngOnInit() {
     this.createForm();
@@ -53,6 +59,8 @@ export class AuthPage implements OnInit {
         if (success) {
           this.router.navigate(['/tabs/tab1']);
           this.loginForm.reset(); // reset inputs
+        } else {
+          this.toastService.presentErrorLoginToast();
         }
       });
   }

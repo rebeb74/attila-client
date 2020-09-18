@@ -23,7 +23,7 @@
 
     <ion-item>
       <ion-icon name="person" color="light" size="small"></ion-icon>
-      <ion-input formControlName="username" class="champ" type="text" inputmode="text" placeholder="Identifiant" required></ion-input>
+      <ion-input formControlName="username" class="champ" type="text" inputmode="text" placeholder="Nom d'utilisateur" required></ion-input>
     </ion-item>
     <div *ngFor="let error of errorMessages.username">
       <ng-container *ngIf="f.username.hasError(error.type) && (f.username.dirty || f.username.touched)" class="ion-padding-start">

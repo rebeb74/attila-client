@@ -33,6 +33,16 @@ export class ApiService {
         }));
   }
 
+  createTaskByUserId(id: string, task: Task){
+    return this.http.post<Task>(`${config.apiUrl}/tasks/` + id, task)
+      .pipe(
+        mapTo(true),
+        catchError(error => {
+          console.log('error', error.error);
+          return of(false);
+        }));
+  }
+
   getUser(): Observable<User>{
     return this.http.get<User>(`${config.apiUrl}/user`);
   }

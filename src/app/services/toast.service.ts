@@ -56,7 +56,7 @@ export class ToastService {
 
   async presentErrorAccountToast() {
     const toast = await this.toastController.create({
-      message: 'L\'identifiant ou l\'email est déjà pris !',
+      message: 'Identifiant ou Email déjà utilisé.',
       animated: true,
       color: 'danger',
       duration: 4000,
@@ -72,6 +72,28 @@ export class ToastService {
       color: 'success',
       duration: 4000,
       translucent: false
+    });
+    toast.present();
+  }
+
+  async presentErrorLoginToast() {
+    const toast = await this.toastController.create({
+      message: 'Nom d\'utilisateur ou mot de passe incorrect !',
+      animated: true,
+      color: 'danger',
+      duration: 4000,
+      translucent: false
+    });
+    toast.present();
+  }
+
+  async presentErrorRegisterToast() {
+    const toast = await this.toastController.create({
+      message: 'Identifiant ou Email déjà utilisé.',
+      animated: true,
+      color: 'danger',
+      duration: 4000,
+      translucent: true
     });
     toast.present();
   }

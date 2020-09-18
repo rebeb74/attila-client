@@ -6,7 +6,7 @@ import { CalendarService } from '../services/calendar.service';
 import { Event, Task } from '../models/event';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../services/api.service';
-import { filter } from 'rxjs/operators';
+import { filter, subscribeOn } from 'rxjs/operators';
 import { User } from '../models/user';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { ShareListPopoverPage } from './share-list-popover/share-list-popover.page';
@@ -130,7 +130,7 @@ export class Tab1Page implements OnInit {
   loadShareUserEvents(shareUser) {
     this.apiService.getShareEventsByUserId(shareUser).subscribe(
       (success) => {
-        console.log('resultat requete', success);
+        console.log('resultat requete event', success);
         this.shareUserEvents = success;
         this.daysConfig = [];
         this.addDaysConfig(success);
@@ -144,7 +144,7 @@ export class Tab1Page implements OnInit {
   loadShareUserTasks(shareUser) {
     this.apiService.getShareTasksByUserId(shareUser).subscribe(
       (success) => {
-        console.log('resultat requete', success);
+        console.log('resultat requete task', success);
         this.shareUserTasks = success;
         this.addDaysConfig(success);
       },
@@ -159,7 +159,6 @@ export class Tab1Page implements OnInit {
       this.userTasks = data.task;
       this.addDaysConfig(data.task);
     });
-    console.log('this.userTasks', this.userTasks);
   }
 
   refresh() {
@@ -177,10 +176,11 @@ export class Tab1Page implements OnInit {
     event.target.complete();
   }
 
-  async presentPopoverShareList() {
+  async presentPopoverShareList(ev: any) {
     const popover = await this.popoverController.create({
       component: ShareListPopoverPage,
       translucent: true,
+      event: ev,
       componentProps: { shareList: this.shareList }
     });
 
@@ -195,11 +195,13 @@ export class Tab1Page implements OnInit {
               this.loadEvents();
               this.loadTasks();
               this.refresh();
+              this.showEventsList(this.selectedDay);
             } else {
               this.loadShareUserEvents(shareUser.userId);
               this.loadShareUserTasks(shareUser.userId);
               setTimeout(() => {
                 this.refresh();
+                this.showEventsList(this.selectedDay);
               }, 1000);
             }
           }
@@ -234,7 +236,7 @@ export class Tab1Page implements OnInit {
       this.daysConfig.push({
         date: new Date(element.startTime),
         subTitle: '●',
-        marked: true,
+        marked: false,
         disable: false
       });
     });
@@ -280,6 +282,9 @@ export class Tab1Page implements OnInit {
           }
         });
       }
+
+      console.log('this.shareUserTasks', this.shareUserTasks);
+      console.log('this.dayTasks', this.dayTasks);
     }
   }
 
@@ -299,8 +304,8 @@ export class Tab1Page implements OnInit {
   }
 
   deleteTask(id) {
-    this.userTasks.forEach((e, index) => {
-      if (e._id === id) {
+    this.userTasks.forEach((task, index) => {
+      if (task._id === id) {
         // Delete database
         this.apiService.deleteTaskById(id).subscribe();
         // update userEvents
@@ -314,19 +319,60 @@ export class Tab1Page implements OnInit {
   }
 
   repeatTask(id) {
-    this.userTasks.forEach(e => {
-      if (e._id === id) {
-        const newDate = new Date(moment(new Date(e.startTime)).add(e.repeat, 'week').toString());
-        // Update database
-        this.apiService.updateTaskById(
-          id,
-          {
-            startTime: newDate,
-            userId: e.userId
-          }
-        );
-        // update allEvents
-        e.startTime = newDate;
+    this.userTasks.forEach((task, index) => {
+      if (task._id === id) {
+        const newDate = new Date(moment(new Date(task.startTime)).add(task.repeat, 'week').toString());
+        // update date
+        task.startTime = newDate;
+
+        if (task.altern !== '') {
+          // Delete task on database
+          this.apiService.deleteTaskById(id).subscribe(
+            () => {
+              console.log(`task deleted for user ${task.userId}`);
+            },
+            (error) => {
+              console.log('error : task not deleted', error);
+            }
+          );
+
+          // Create task on share user database
+          this.shareList.forEach((shareUser) => {
+            if (shareUser.username === task.altern) {
+              task.altern = this.currentUser.username;
+              task.userId = shareUser.userId;
+              this.apiService.createTaskByUserId(shareUser.userId, task).subscribe(
+                () => {
+                  console.log(`task created for user ${shareUser.userId}`);
+                },
+                (error) => {
+                  console.log('error : task not created', error);
+                }
+              );
+            }
+          });
+
+          // Update this.userTasks
+          this.userTasks.splice(index, 1);
+
+        } else {
+          // Update database
+          this.apiService.updateTaskById(
+            id,
+            {
+              startTime: newDate,
+              userId: task.userId
+            }
+          ).subscribe(
+            () => {
+              console.log(`task updated`);
+            },
+            (error) => {
+              console.log('error : task not updated', error);
+            }
+          );
+
+        }
 
         // update _daysConfig
         this.updateDaysConfig(this.userTasks, this.userEvents);

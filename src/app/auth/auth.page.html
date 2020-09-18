@@ -9,7 +9,7 @@
 
     <ion-item>
       <ion-icon name="person" size="small" class="label"></ion-icon>
-      <ion-input formControlName="username" color="light" type="text" inputmode="text" placeholder="Identifiant" required></ion-input>
+      <ion-input formControlName="username" color="light" type="text" inputmode="text" placeholder="Nom d'utilisateur" required></ion-input>
     </ion-item>
     <div *ngFor="let error of errorMessages.username">
       <ng-container *ngIf="f.username.hasError(error.type) && (f.username.dirty || f.username.touched)">
