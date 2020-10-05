@@ -3,7 +3,7 @@ export interface AllEvents{
     userId?: string;
     title?: string;
     description?: string;
-    startTime: Date;
+    startTime: string;
 }
 
 export interface Event extends AllEvents{

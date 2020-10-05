@@ -29,12 +29,12 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-slides effect="slide" (ionSlidePrevEnd)="calendarRef.prev()" (ionSlideNextEnd)="calendarRef.prev()">
+        <!-- <ion-slides effect="slide" (ionSlidePrevEnd)="calendarRef.prev()" (ionSlideNextEnd)="calendarRef.prev()"> -->
           <div class="ion-padding">
             <ion-calendar #calendar [(ngModel)]="date" [type]="type" (change)="onChange($event)"
               (monthChange)="onMonthChange($event)" [options]="optionsRange"></ion-calendar>
           </div>
-        </ion-slides>
+        <!-- </ion-slides> -->
       </ion-col>
     </ion-row>
     <ion-row>

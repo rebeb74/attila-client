@@ -321,7 +321,7 @@ export class Tab1Page implements OnInit {
   repeatTask(id) {
     this.userTasks.forEach((task, index) => {
       if (task._id === id) {
-        const newDate = new Date(moment(new Date(task.startTime)).add(task.repeat, 'week').toString());
+        const newDate = moment(task.startTime).add(task.repeat, 'week').format('YYYY-MM-DD');
         // update date
         task.startTime = newDate;
 
@@ -341,6 +341,7 @@ export class Tab1Page implements OnInit {
             if (shareUser.username === task.altern) {
               task.altern = this.currentUser.username;
               task.userId = shareUser.userId;
+              task._id = null;
               this.apiService.createTaskByUserId(shareUser.userId, task).subscribe(
                 () => {
                   console.log(`task created for user ${shareUser.userId}`);
@@ -360,6 +361,7 @@ export class Tab1Page implements OnInit {
           this.apiService.updateTaskById(
             id,
             {
+              ...task,
               startTime: newDate,
               userId: task.userId
             }
