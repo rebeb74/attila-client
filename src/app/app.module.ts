@@ -18,6 +18,7 @@ import { GetUserResolver } from './getUser.resolver';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { ListResolver } from './list/list.resolver';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,7 +48,8 @@ import { environment } from '../environments/environment';
     },
     CalendarEventsResolver,
     CalendarTasksResolver,
-    GetUserResolver
+    GetUserResolver,
+    ListResolver
   ],
   bootstrap: [AppComponent]
 })

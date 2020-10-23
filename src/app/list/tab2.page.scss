@@ -1,33 +1,126 @@
-
 ion-item {
-    --ion-background-color: transparent !important;
-  }
-  
-  ion-icon {
-    padding: 10px;
-  }
-  
-  ion-back-button{
-    padding-left: 10px;
-    width: 25px;
-  }
-  
-  .label{
-    color: thistle;
-  }
-  
-  .champ{
-    color: whitesmoke;
-  }
-  
-  .segment{
-      color:whitesmoke;
-      --ion-background-color: #311b92;
-      background-color: rgba(255, 0, 0, 0);
-    }
-  
-    .add{
-      --color: whitesmoke;
-      --background: #8e24aa;
-    }
-    
+  --ion-background-color: transparent !important;
+  --padding-start: 0px;
+  --inner-padding-top: 0px !important;
+  --inner-padding-bottom: 0px !important;
+  --min-height: 30px;
+}
+
+ion-checkbox {
+  --background: whitesmoke;
+  --border-color: #8e24aa;
+  margin: 0px;
+  margin-left: 3px;
+  margin-right: 4px
+}
+
+ion-icon {
+  padding: 0px;
+  margin: 0px;
+}
+
+ion-label {
+  padding-bottom: 5px;
+  padding-top: 5px;
+  --min-height: 30px;
+}
+
+ion-grid {
+  padding: 0px;
+}
+
+ion-input {
+  --padding-start: 5px;
+}
+
+ion-item-sliding {
+  margin-bottom: 5px;
+}
+
+div{
+  display: inline;
+}
+
+form{
+  display: inline;
+}
+
+.add {
+  vertical-align: middle;
+  color: #8e24aa;
+}
+
+.addDeleteBtn {
+  width: 100%;
+}
+
+.scroll_box {
+  width: 100%;
+  overflow: auto;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.edit {
+  color: #8e24aa;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.list_box {
+  color: #8e24aa;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.list_box_add {
+  color: #8e24aa;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: 7px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.list_box_selected {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+.item_add {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+}
+
+.list_item {
+  background-color: whitesmoke;
+  border-radius: 30px;
+  color: #8e24aa;
+  font-weight: bolder;
+}
+
+.list_item_add {
+  background-color: whitesmoke;
+  border-radius: 30px;
+  padding-left: 0px;
+  padding-right: 0px;
+  color: #8e24aa;
+  font-weight: bolder;
+}
+
+.deleteItem {
+  background-color: rgba(255, 0, 0, 0.5);
+  color: whitesmoke;
+  border-radius: 30px;
+}
+
+.editItem {
+  background-color: rgba(0, 255, 0, 0.5);
+  color: whitesmoke;
+  border-radius: 30px;
+}
+
+.no-border {
+  border: 0px;
+}
+

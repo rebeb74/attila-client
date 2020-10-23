@@ -1,6 +1,5 @@
 import { Component, OnInit, Output, Input } from '@angular/core';
-import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
-import { CalendarService } from '../../services/calendar.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Task, Event } from 'src/app/models/event';
 
@@ -23,7 +22,6 @@ export class EditEventPage implements OnInit {
   constructor(
     private fb: FormBuilder,
     public modalController: ModalController,
-    calService: CalendarService
   ) { }
 
   ngOnInit() {
@@ -65,7 +63,7 @@ export class EditEventPage implements OnInit {
 
   onRepeatChange() {
     if (this.typeEvent === 'task') {
-      if(this.editEventForm.get('altern').value === '0'){
+      if (this.editEventForm.get('altern').value === '0') {
         this.editEventForm.get('altern').disable();
       }
       this.editEventForm.get('repeat').valueChanges
@@ -84,7 +82,7 @@ export class EditEventPage implements OnInit {
 
   async myDismiss() {
     let editedEvent: Array<object>;
-    if (this.typeEvent === 'rdv'){
+    if (this.typeEvent === 'rdv') {
       editedEvent = [
         {
           _id: this.currentEvent._id,
@@ -99,26 +97,26 @@ export class EditEventPage implements OnInit {
           typeEvent: this.typeEvent
         }
       ];
-    } else if (this.typeEvent === 'task'){
-        editedEvent = [
-          {
-            _id: this.currentTask._id,
-            title: this.f.title.value,
-            description: this.f.description.value,
-            startTime: this.f.startTime.value,
-            repeat: this.f.repeat.value || '',
-            altern: this.f.altern.value || '',
-          },
-          {
-            typeEvent: this.typeEvent
-          }
-        ];
+    } else if (this.typeEvent === 'task') {
+      editedEvent = [
+        {
+          _id: this.currentTask._id,
+          title: this.f.title.value,
+          description: this.f.description.value,
+          startTime: this.f.startTime.value,
+          repeat: this.f.repeat.value || '',
+          altern: this.f.altern.value || '',
+        },
+        {
+          typeEvent: this.typeEvent
+        }
+      ];
 
     }
     await this.modalController.dismiss(editedEvent);
   }
 
-  setShareList(){
+  setShareList() {
     console.log('this.shareList', this.shareList);
     this.shareList.forEach((element, index) => {
       if (index !== 0) {

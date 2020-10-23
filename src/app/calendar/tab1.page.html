@@ -53,10 +53,10 @@
         </div>
 
         <div class="ion-padding-horizontal ion-padding-bottom" *ngFor="let task of dayTasks">
-          <ion-item-sliding lines="none">
-            <ion-item-options *ngIf="currentCalUsername === currentUser.username" lines="none" side="start"
-              (ionSwipe)="deleteTask(task._id)">
-              <ion-item-option lines="none" expandable="true" (click)="deleteTask(task._id)" class="events"
+          <ion-item-sliding>
+            <ion-item-options *ngIf="currentCalUsername === currentUser.username"side="start"
+              (ionSwipe)="deleteTask(task._id)" class="no-border">
+              <ion-item-option expandable="true" (click)="deleteTask(task._id)" class="events"
                 class="delete">
                 Supprimer</ion-item-option>
             </ion-item-options>
@@ -65,8 +65,8 @@
               <ion-label lines="none">{{task.title}}</ion-label>
             </ion-item>
 
-            <ion-item-options *ngIf="currentCalUsername === currentUser.username && task.repeat !== 0" lines="none"
-              side="end" (ionSwipe)="repeatTask(task._id)">
+            <ion-item-options *ngIf="currentCalUsername === currentUser.username && task.repeat !== 0"
+              side="end" (ionSwipe)="repeatTask(task._id)" class="no-border">
               <ion-item-option lines="none" (click)="repeatTask(task._id)" expandable="true" class="events"
                 class="repeat">
                 Répéter</ion-item-option>
