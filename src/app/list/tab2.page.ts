@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ModalController } from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core';
 
 import { List } from '../models/list';
+import { User } from '../models/user';
+
 import { ApiService } from '../services/api.service';
+
+
+import { AddListPage } from './add-list/add-list.page';
+import { EditListPage } from './edit-list/edit-list.page';
 
 @Component({
   selector: 'app-tab2',
@@ -21,55 +28,41 @@ export class Tab2Page implements OnInit {
   editBtnListIsHidden = false;
   addInputItemIsHidden = true;
   selectedList: List;
-  inputListLength = 1;
-  inputListWidth = 'width : 0px';
-  inputItemLength = 1;
-  inputItemWidth = 'width : 0px';
-  isEditingList = false;
-  isEditingItem = false;
-  isEditingItem$: Observable<string>;
   oldItemValue = '';
   noList = true;
+  currentUser: User;
+  shareList = [];
+  currentUserIsOwner: boolean;
 
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
     private route: ActivatedRoute,
+    private modalController: ModalController,
   ) { }
 
   ngOnInit() {
+    // Get Current User
+    this.getCurrentUser();
+    // Create forms
     this.createForm();
-    this.initialLoadLists(0);
+    // Load Lists
+    this.initialGetLists(0);
+    this.clearEmptyItems();
+    this.createItemForms();
   }
 
-  initialLoadLists(indexList) {
-    this.route.data.subscribe((data: { list: List[] }) => {
-      if (data.list.length !== 0) {
-        this.noList = false;
-        this.myLists = data.list;
-        this.selectedList = this.myLists[indexList];
-        console.log('indexList', indexList);
-        console.log('this.selectedList', this.selectedList);
-        console.log('this.myLists', this.myLists);
-        this.createItemForms();
-      } else {
-        this.noList = true;
-      }
+  getCurrentUser() {
+    this.route.data.subscribe((data: { user: User }) => {
+      this.currentUser = data.user;
+      console.log(this.currentUser);
     });
   }
 
-  createItemForms() {
-    console.log('mylist', this.myLists);
-    if (this.myLists !== []) {
-      this.selectedList.list.forEach((item) => {
-        this.t.push(this.fb.group({
-          createdOn: item.createdOn,
-          _id: item._id,
-          value: item.value,
-          checked: item.checked,
-        }));
-      });
-    }
+  sortListByDate(list) {
+    list.sort((a: List, b: List) => {
+      return (new Date(b.createdOn)).getTime() - (new Date(a.createdOn)).getTime();
+    });
   }
 
   createForm() {
@@ -84,70 +77,125 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  get f() { return this.addListForm.controls; }
   get fi() { return this.addItemForm.controls; }
   get d() { return this.dynamicForm.controls; }
   get t() { return this.d.items as FormArray; }
 
-  addList() {
-    if (this.addInputListIsHidden) {
-      this.inputListLength = 20;
-      this.inputListWidth = 'width : 80%';
-      this.addInputListIsHidden = false;
+  async addList() {
+    const modal: HTMLIonModalElement =
+      await this.modalController.create({
+        component: AddListPage
+      });
+    modal.onDidDismiss().then((detail: OverlayEventDetail) => {
+      if (detail.data !== undefined) {
+        this.myLists.unshift(
+          {
+            listName: detail.data.listName,
+            public: detail.data.public,
+            userName: this.currentUser.username
+          }
+        );
+        this.apiService.createList({
+          listName: detail.data.listName,
+          public: detail.data.public,
+          userName: this.currentUser.username
+        }).subscribe(
+          (success) => {
+            console.log('liste créée', success);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+        this.getLists(0);
+        this.clearEmptyItems();
+      }
+    });
+    await modal.present();
+  }
+
+  getLists(indexSelectedList) {
+    this.apiService.getLists().subscribe((data: List[]) => {
+      console.log('data', data);
+      if (data.length !== 0) {
+        this.noList = false;
+        this.myLists = data;
+        this.sortListByDate(this.myLists);
+        this.selectedList = this.myLists[indexSelectedList];
+        this.checkListOwnership();
+      } else {
+        this.noList = true;
+      }
+    },
+      (error) => {
+        console.log(error);
+      });
+  }
+
+  initialGetLists(indexSelectedList) {
+    this.route.data.subscribe((data: { list: List[] }) => {
+      if (data.list.length !== 0) {
+        this.noList = false;
+        this.myLists = data.list;
+        this.sortListByDate(this.myLists);
+        this.selectedList = this.myLists[indexSelectedList];
+        this.checkListOwnership();
+      } else {
+        this.noList = true;
+      }
+    },
+      (error) => {
+        console.log(error);
+      });
+  }
+
+  checkListOwnership() {
+    if (this.selectedList.userName === this.currentUser.username) {
+      this.currentUserIsOwner = true;
     } else {
-      this.addInputListIsHidden = true;
-      this.inputListLength = 1;
-      this.inputListWidth = 'width : 0px';
-      this.addListForm.reset(); // reset inputs
-    }
-    if (this.editBtnListIsHidden === true) {
-      this.editBtnListIsHidden = false;
+      this.currentUserIsOwner = false;
     }
   }
 
-  createList() {
-    this.noList = false;
-    console.log('this.f.listName.value', this.f.listName.value);
-    if (this.isEditingList === false) {
-      this.myLists.unshift(
-        {
-          listName: this.f.listName.value
+  async editList() {
+    this.checkListOwnership();
+    const modal: HTMLIonModalElement =
+      await this.modalController.create({
+        component: EditListPage,
+        componentProps: {
+          listName: this.selectedList.listName,
+          public: this.selectedList.public,
+          userName: this.selectedList.userName,
+          currentUserIsOwner: this.currentUserIsOwner
         }
-      );
-      this.apiService.createList({
-        listName: this.f.listName.value
-      }).subscribe(
-        (success) => {
-          console.log('liste créée', success);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-      this.addInputListIsHidden = true;
-      this.inputListLength = 1;
-      this.inputListWidth = 'width : 0px';
-      this.addListForm.reset(); // reset inputs
-      this.selectedList = this.myLists[0];
-      this.getLists(0);
-    } else {
-      this.selectedList.listName = this.f.listName.value;
-      this.updateListById(this.selectedList._id, this.selectedList);
-      this.addInputListIsHidden = true;
-      this.editBtnListIsHidden = false;
-      this.inputListLength = 1;
-      this.inputListWidth = 'width : 0px';
-      this.addListForm.reset(); // reset inputs
-      this.isEditingList = false;
-    }
+      });
+    modal.onDidDismiss().then((detail: OverlayEventDetail) => {
+      console.log('detail', detail);
+      if (detail.data !== undefined) {
+        this.selectedList.listName = detail.data.listName;
+        this.selectedList.public = detail.data.public;
+        this.updateListById(this.selectedList._id, this.selectedList);
+      }
+    });
+    await modal.present();
+  }
+
+  clearEmptyItems() {
+    this.selectedList.list.forEach((item, index) => {
+      if (item.value === '') {
+        this.selectedList.list.splice(index, 1);
+      }
+    });
   }
 
   updateListById(id, list) {
+    console.log('list', list);
     this.apiService.updateListById(id, list).subscribe(
       (success) => {
-        console.log('List updated', success);
-        this.myLists.forEach((list, indexList) => {
-          if (list._id === id) {
+        this.myLists.forEach((oldList, indexList) => {
+          if (oldList._id === id) {
+            console.log('oldList.public', oldList.public);
+            console.log('success', success);
             this.getLists(indexList);
           }
         });
@@ -158,57 +206,17 @@ export class Tab2Page implements OnInit {
     );
   }
 
-  getLists(indexList) {
-    this.apiService.getLists().subscribe(
-      (success) => {
-        this.myLists = success;
-        if (this.myLists.length !== 0) {
-          this.noList = false;
-          this.selectedList = this.myLists[indexList];
-          console.log('indexList', indexList);
-          console.log('this.selectedList', this.selectedList);
-          console.log('this.myLists', this.myLists);
-          this.createItemForms();
-        } else {
-          this.noList = true;
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  editList() {
-
-    if (this.addInputListIsHidden) {
-      this.inputListLength = 20;
-      this.inputListWidth = 'width : 80%';
-      this.addInputListIsHidden = false;
-      this.editBtnListIsHidden = true;
-    } else {
-      this.addInputListIsHidden = true;
-      this.editBtnListIsHidden = false;
-      this.inputListLength = 1;
-      this.inputListWidth = 'width : 0px';
-      this.addListForm.reset(); // reset inputs
-    }
-    this.isEditingList = true;
-    this.f.listName.setValue(this.selectedList.listName);
-  }
-
   deleteList() {
     this.apiService.deleteListById(this.selectedList._id).subscribe(
       (success) => {
         this.myLists.forEach((list, index) => {
           if (list._id === this.selectedList._id) {
-            console.log('list deleted', success);
-            console.log('this.myLists', ...this.myLists);
             this.myLists.splice(index, 1);
-            console.log('this.myLists', ...this.myLists);
+            this.selectedList = this.myLists[index];
           }
         });
         this.getLists(0);
+        this.createItemForms();
       },
       (error) => {
         console.log(error);
@@ -216,42 +224,58 @@ export class Tab2Page implements OnInit {
     );
   }
 
-  addItem() {
-    if (this.addInputItemIsHidden) {
-      this.addInputItemIsHidden = false;
-      this.inputItemLength = 30;
-      this.inputItemWidth = 'width : 100%';
-    } else {
-      this.addInputItemIsHidden = true;
-      this.inputItemLength = 1;
-      this.inputItemWidth = 'width : 0px';
-      this.addItemForm.reset(); // reset inputs
+  createItemForms() {
+    this.t.controls = [];
+    if (this.myLists.length !== 0) {
+      this.selectedList.list.forEach((item) => {
+        this.t.push(this.fb.group({
+          createdOn: item.createdOn,
+          _id: item._id,
+          value: item.value,
+          checked: item.checked,
+        }));
+      });
     }
-    console.log('addInputItemIsHidden', this.addInputItemIsHidden);
+    console.log('this.selectedList', this.selectedList);
+    console.log('t', this.t);
   }
 
-  createItem() {
-    console.log('this.fi.itemName.value', this.fi.itemName.value);
-    if (this.fi.itemName.value !== '') {
-      this.myLists.forEach((list: List, index) => {
-        if (this.selectedList === list) {
-          this.myLists[index].list.unshift(
-            {
-              value: this.fi.itemName.value
-            }
-          );
-          this.updateListById(this.selectedList._id, this.selectedList);
-          this.getLists(index);
-        }
-      });
-      this.addItem();
-    }
+  addItem() {
+    this.clearEmptyItems();
+    this.myLists.forEach((list: List, index) => {
+      if (this.selectedList === list) {
+        this.myLists[index].list.push(
+          {
+            value: '',
+            checked: false
+          }
+        );
+        this.apiService.updateListById(this.selectedList._id, this.selectedList).subscribe(
+          () => {
+            this.apiService.getLists().subscribe((data: List[]) => {
+              this.myLists = data;
+              console.log('this.selectedList', this.selectedList);
+              this.sortListByDate(this.myLists);
+              this.selectedList = this.myLists[index];
+              this.checkListOwnership();
+              this.createItemForms();
+            },
+              (error) => {
+                console.log(error);
+              });
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+    });
   }
 
   updateItem(newItem) {
     console.log('newItem', newItem);
     this.myLists.forEach((list: List, indexList) => {
-      if (this.selectedList === list) {
+      if (this.selectedList._id === list._id) {
         this.myLists[indexList].list.forEach((item, indexItem) => {
           if (newItem._id === item._id) {
             this.myLists[indexList].list[indexItem].value = newItem.value;
@@ -266,23 +290,27 @@ export class Tab2Page implements OnInit {
     this.myLists.forEach((list: List, indexList) => {
       if (this.selectedList === list) {
         this.myLists[indexList].list.forEach((item, indexItem) => {
-          if (item._id === id.value._id) {
+          if (item._id === id) {
             this.myLists[indexList].list.splice(indexItem, 1);
           }
         });
       }
     });
     this.updateListById(this.selectedList._id, this.selectedList);
+    this.createItemForms();
   }
 
 
   changeList(newSelectedList) {
     this.selectedList = newSelectedList;
+    this.checkListOwnership();
     this.myLists.forEach((list: List, index) => {
       if (newSelectedList === list) {
         this.getLists(index);
       }
     });
+    this.clearEmptyItems();
+    this.createItemForms();
   }
 
   changeItemCheck(editItem) {

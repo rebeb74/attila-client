@@ -9,16 +9,20 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { CalendarComponent } from './calendar/ion2-calendar';
+
 import { TokenInterceptor } from './token.interceptor';
 import { CalendarTasksResolver } from './calendar/calendarTasks.resolver';
 import { CalendarEventsResolver } from './calendar/calendarEvents.resolver';
 import { GetUserResolver } from './getUser.resolver';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ListResolver } from './list/list.resolver';
+
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ListResolver } from './list/list.resolver';
 
 @NgModule({
   declarations: [AppComponent],

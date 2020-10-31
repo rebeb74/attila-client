@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { OverlayEventDetail } from '@ionic/core';
-import { ApiService } from '../services/api.service';
 import { ActivatedRoute} from '@angular/router';
-import { User } from '../models/user';
-import { AuthService } from '../services/auth.service';
 import { ModalController, ToastController } from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core';
+
+import { User } from '../models/user';
+
+import { ApiService } from '../services/api.service';
+import { AuthService } from '../services/auth.service';
+
 import { EditUserAccountPage } from './edit-user-account/edit-user-account.page';
 import { EditPasswordPage } from './edit-password/edit-password.page';
 import { EditSharePage } from './edit-share/edit-share.page';
+
 import { ToastService } from '../services/toast.service';
 
 @Component({

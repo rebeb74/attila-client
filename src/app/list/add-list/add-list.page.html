@@ -1,0 +1,28 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="myDismiss('back')" color="light"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Ajoute Liste</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="addListForm" (ngSubmit)="onSubmit()">
+
+    <ion-item>
+      <ion-label position="floating" class="label">Nom de liste</ion-label>
+      <ion-input formControlName="listName" type="text" class="champ" placeholder="Ex: Courses"></ion-input>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label class="label"> Partager la liste ?</ion-label>
+      <ion-checkbox formControlName="public" class="champ"></ion-checkbox>
+    </ion-item>
+
+    <ion-button expand="block" color="light" shape="round" fill="outline" type="submit" [disabled]="addListForm.invalid">
+      ajouter
+    </ion-button>
+  
+  </form>
+</ion-content>

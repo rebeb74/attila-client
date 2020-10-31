@@ -95,6 +95,10 @@ export class ApiService {
         );
   }
 
+  getShareListsByUserId(id: string) {
+    return this.http.get<List[]>(`${config.apiUrl}/share-lists/` + id);
+  }
+
   updateTaskById(id, task: Task) {
     return this.http.put<Task[]>(`${config.apiUrl}/tasks/` + id, task);
   }

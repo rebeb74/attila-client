@@ -10,26 +10,20 @@
       </ion-row>
       <ion-row>
         <ion-col class="addDeleteBtn" size="8">
-          <form [formGroup]="addListForm" (ngSubmit)="createList()">
-            <ion-chip class="list_box_add" slot="start">
-              <ion-icon *ngIf="addInputListIsHidden" name="add-circle-outline" class="add" size="large"
-                (click)="addList()"></ion-icon>
-              <ion-icon *ngIf="!addInputListIsHidden" name="remove-circle-outline" class="add" size="large"
-                (click)="addList()"></ion-icon>
-              <ion-input formControlName="listName" [size]="inputListLength" [style]="inputListWidth" type="text"
-                inputmode="text"></ion-input>
-            </ion-chip>
-          </form>
+          <ion-chip class="list_box_add">
+            <ion-icon name="add-circle-outline" class="add" size="large" (click)="addList()"></ion-icon>
+          </ion-chip>
         </ion-col>
         <ion-col size="2">
           <ion-chip class="edit">
-            <ion-icon *ngIf="!editBtnListIsHidden" class="add" name="ellipsis-horizontal-circle-outline" size="large"
+            <ion-icon *ngIf="!noList && currentUserIsOwner" class="add" name="ellipsis-horizontal-circle-outline" size="large"
               (click)="editList()"></ion-icon>
           </ion-chip>
         </ion-col>
         <ion-col size="2">
           <ion-chip class="list_box_add">
-            <ion-icon class="add" name="close-circle-outline" size="large" (click)="deleteList()"></ion-icon>
+            <ion-icon *ngIf="!noList && currentUserIsOwner" class="add" name="close-circle-outline" size="large" (click)="deleteList()">
+            </ion-icon>
           </ion-chip>
         </ion-col>
       </ion-row>
@@ -39,9 +33,11 @@
             <div *ngFor="let list of myLists">
               <ion-chip *ngIf="list === selectedList" class="list_box list_box_selected">
                 <ion-label color="list_box">{{list.listName}}</ion-label>
+                <ion-icon *ngIf="list.public" name="share-social-outline" class="share"></ion-icon>
               </ion-chip>
               <ion-chip *ngIf="list !== selectedList" class="list_box" (click)="changeList(list)">
                 <ion-label color="list_box">{{list.listName}}</ion-label>
+                <ion-icon *ngIf="list.public" name="share-social-outline" class="share"></ion-icon>
               </ion-chip>
             </div>
           </ion-col>
@@ -56,7 +52,7 @@
 
 
     <div *ngIf="noList == false">
-  
+
       <ion-row *ngIf="myLists !== []">
         <ion-col>
           <form [formGroup]="dynamicForm">
@@ -64,11 +60,12 @@
               <div [formGroup]="item">
                 <ion-item-sliding>
                   <ion-item class="list_item">
-                    <ion-checkbox [checked]="item.value.checked" (ionChange)="changeItemCheck(item.value)"></ion-checkbox>
-                    <ion-input formControlName="value" class="ion-no-padding"
-                      (ionBlur)="updateItem(item.value)"></ion-input>
+                    <ion-checkbox [checked]="item.value.checked" (ionChange)="changeItemCheck(item.value)">
+                    </ion-checkbox>
+                    <ion-input formControlName="value" class="ion-no-padding" (ionChange)="updateItem(item.value)">
+                    </ion-input>
                   </ion-item>
-                  <ion-item-options side="end" (ionSwipe)="deleteItem(item)" class="no-border">
+                  <ion-item-options side="end" (ionSwipe)="deleteItem(item.value._id)" class="no-border">
                     <ion-item-option (click)="deleteItem(item.value._id)" class="deleteItem">Supprimer</ion-item-option>
                   </ion-item-options>
                 </ion-item-sliding>
@@ -77,18 +74,12 @@
           </form>
         </ion-col>
       </ion-row>
-  
+
       <ion-row *ngIf="myLists !== []">
         <ion-col class="item_add">
-          <form [formGroup]="addItemForm" (ngSubmit)="createItem()">
+          <form [formGroup]="addItemForm">
             <ion-chip class="list_item_add">
-              <ion-icon *ngIf="addInputItemIsHidden" name="add-circle-outline" class="add" size="large"
-                (click)="addItem()"></ion-icon>
-              <ion-icon *ngIf="!addInputItemIsHidden" name="remove-circle-outline" class="add" size="large"
-                (click)="addItem()">
-              </ion-icon>
-              <ion-input formControlName="itemName" [size]="inputItemLength" [style]="inputItemWidth" type="text"
-                inputmode="text"></ion-input>
+              <ion-icon name="add-circle-outline" class="add" size="large" (click)="addItem()"></ion-icon>
             </ion-chip>
           </form>
         </ion-col>
