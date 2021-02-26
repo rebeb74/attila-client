@@ -30,12 +30,16 @@ export class EditSharePage implements OnInit {
 
 
   onSubmit() {
-    this.myDismiss();
+    this.myDismiss('submit');
   }
 
-  async myDismiss() {
-    const newUserSettings = {share: this.f.username.value};
-    await this.modalController.dismiss(newUserSettings);
+  async myDismiss(reason) {
+    if (reason === 'submit') {
+      const newUserSettings = { share: this.f.username.value };
+      await this.modalController.dismiss(newUserSettings);
+    } else {
+      await this.modalController.dismiss();
+    }
   }
 }
 

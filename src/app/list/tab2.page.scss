@@ -3,15 +3,17 @@ ion-item {
   --padding-start: 0px;
   --inner-padding-top: 0px !important;
   --inner-padding-bottom: 0px !important;
-  --min-height: 30px;
+  --min-height: 40px;
 }
 
 ion-checkbox {
   --background: whitesmoke;
   --border-color: #8e24aa;
   margin: 0px;
-  margin-left: 3px;
-  margin-right: 4px
+  margin-left: 2px;
+  margin-right: 4px;
+  width: 35px;
+  height: 35px;
 }
 
 ion-icon {
@@ -22,7 +24,7 @@ ion-icon {
 ion-label {
   padding-bottom: 5px;
   padding-top: 5px;
-  --min-height: 30px;
+  --min-height: 50px;
 }
 
 ion-grid {
@@ -99,7 +101,7 @@ form{
 
 .list_item {
   background-color: whitesmoke;
-  border-radius: 30px;
+  border-radius: 50px;
   color: #8e24aa;
   font-weight: bolder;
 }
@@ -116,13 +118,7 @@ form{
 .deleteItem {
   background-color: rgba(255, 0, 0, 0.5);
   color: whitesmoke;
-  border-radius: 30px;
-}
-
-.editItem {
-  background-color: rgba(0, 255, 0, 0.5);
-  color: whitesmoke;
-  border-radius: 30px;
+  border-radius: 50px;
 }
 
 .no-border {

@@ -102,12 +102,12 @@ export class Tab2Page implements OnInit {
         }).subscribe(
           (success) => {
             console.log('liste créée', success);
+            this.getLists(0);
           },
           (error) => {
             console.log(error);
           }
         );
-        this.getLists(0);
         this.clearEmptyItems();
       }
     });

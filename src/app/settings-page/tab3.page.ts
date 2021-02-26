@@ -128,7 +128,7 @@ export class Tab3Page implements OnInit {
         }
       });
     modal.onDidDismiss().then((detail: OverlayEventDetail) => {
-      if (detail !== null) {
+      if (detail.data !== undefined) {
         console.log('The result:', detail.data);
         this.currentUser.email = detail.data.email;
         this.currentUser.username = detail.data.username;
@@ -152,7 +152,8 @@ export class Tab3Page implements OnInit {
         component: EditSharePage
       });
     modal.onDidDismiss().then((detail: OverlayEventDetail) => {
-      if (detail !== null) {
+      if (detail.data !== undefined) {
+        console.log('PASS');
         if (this.emptyShare) {
           this.addShare(detail);
         } else {
@@ -181,7 +182,7 @@ export class Tab3Page implements OnInit {
         component: EditPasswordPage
       });
     modal.onDidDismiss().then((detail: OverlayEventDetail) => {
-      if (detail !== null) {
+      if (detail.data !== undefined) {
         const data = {
           username: this.currentUser.username,
           oldPassword: detail.data.oldPassword,

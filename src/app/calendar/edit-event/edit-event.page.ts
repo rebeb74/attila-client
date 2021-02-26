@@ -80,40 +80,45 @@ export class EditEventPage implements OnInit {
     }
   }
 
-  async myDismiss() {
-    let editedEvent: Array<object>;
-    if (this.typeEvent === 'rdv') {
-      editedEvent = [
-        {
-          _id: this.currentEvent._id,
-          title: this.f.title.value,
-          description: this.f.description.value,
-          startTime: this.f.startTime.value,
-          startHour: this.f.startHour.value,
-          place: this.f.place.value,
-          alert: this.f.alert.value,
-        },
-        {
-          typeEvent: this.typeEvent
-        }
-      ];
-    } else if (this.typeEvent === 'task') {
-      editedEvent = [
-        {
-          _id: this.currentTask._id,
-          title: this.f.title.value,
-          description: this.f.description.value,
-          startTime: this.f.startTime.value,
-          repeat: this.f.repeat.value || '',
-          altern: this.f.altern.value || '',
-        },
-        {
-          typeEvent: this.typeEvent
-        }
-      ];
+  async myDismiss(reason) {
+    if (reason === 'submit') {
+      let editedEvent: Array<object>;
+      if (this.typeEvent === 'rdv') {
+        editedEvent = [
+          {
+            _id: this.currentEvent._id,
+            title: this.f.title.value,
+            description: this.f.description.value,
+            startTime: this.f.startTime.value,
+            startHour: this.f.startHour.value,
+            place: this.f.place.value,
+            alert: this.f.alert.value,
+          },
+          {
+            typeEvent: this.typeEvent
+          }
+        ];
+      } else if (this.typeEvent === 'task') {
+        editedEvent = [
+          {
+            _id: this.currentTask._id,
+            title: this.f.title.value,
+            description: this.f.description.value,
+            startTime: this.f.startTime.value,
+            repeat: this.f.repeat.value || '',
+            altern: this.f.altern.value || '',
+          },
+          {
+            typeEvent: this.typeEvent
+          }
+        ];
 
+      }
+      await this.modalController.dismiss(editedEvent);
+    } else {
+      await this.modalController.dismiss();
     }
-    await this.modalController.dismiss(editedEvent);
+
   }
 
   setShareList() {

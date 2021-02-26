@@ -3,9 +3,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Tokens } from '../models/tokens';
 import { of, Observable } from 'rxjs';
 import { catchError, mapTo, tap } from 'rxjs/operators';
-import { config } from '../config/config';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
+import * as env from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   register(user: { email: string, username: string, password: string }): Observable<boolean | number> {
-    return this.http.post<any>(`${config.apiUrl}/register`, user)
+    return this.http.post<any>(`${env.environment.apiUrl}/register`, user)
       .pipe(
         mapTo(201),
         catchError((error: HttpErrorResponse) => {
@@ -30,7 +30,7 @@ export class AuthService {
 
   login(user: { username: string, password: string }): Observable<boolean> {
     console.log('user', user);
-    return this.http.post<any>(`${config.apiUrl}/login`, user)
+    return this.http.post<any>(`${env.environment.apiUrl}/login`, user)
       .pipe(
         tap(tokens => this.doLoginUser(user.username, tokens)),
         mapTo(true),
@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post<any>(`${config.apiUrl}/logout`, {
+    return this.http.post<any>(`${env.environment.apiUrl}/logout`, {
       'token': this.getRefreshToken()
     })
       .pipe(
@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   refreshToken() {
-    return this.http.post<any>(`${config.apiUrl}/token`, {
+    return this.http.post<any>(`${env.environment.apiUrl}/token`, {
       'token': this.getRefreshToken()
     }).pipe(tap((tokens: Tokens) => {
       this.storeAccessToken(tokens.accessToken);

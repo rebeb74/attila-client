@@ -73,12 +73,17 @@ export class EditPasswordPage implements OnInit {
   }
 
   onSubmit() {
-    this.myDismiss();
+    this.myDismiss('submit');
   }
 
-  async myDismiss() {
-    const passwordSettings = { oldPassword: this.f.oldPassword.value, newPassword: this.f.newPassword.value };
-    await this.modalController.dismiss(passwordSettings);
+  async myDismiss(reason) {
+    if (reason === 'submit') {
+      const passwordSettings = { oldPassword: this.f.oldPassword.value, newPassword: this.f.newPassword.value };
+      await this.modalController.dismiss(passwordSettings);
+    } else {
+      await this.modalController.dismiss();
+    }
   }
 
 }
+

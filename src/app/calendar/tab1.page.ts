@@ -414,7 +414,7 @@ export class Tab1Page implements OnInit {
         }
       });
     modal.onDidDismiss().then((detail: OverlayEventDetail) => {
-      if (detail !== null) {
+      if (detail.data !== undefined) {
         console.log('The result:', detail.data);
         const typeEvent = detail.data[1].typeEvent;
         if (typeEvent === 'rdv') {

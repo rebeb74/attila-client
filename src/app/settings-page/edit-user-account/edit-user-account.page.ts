@@ -31,11 +31,15 @@ export class EditUserAccountPage implements OnInit {
   get f() { return this.userEditForm.controls; }
 
   onSubmit() {
-    this.myDismiss();
+    this.myDismiss('submit');
   }
 
-  async myDismiss() {
-    const newUserSettings = {email: this.f.email.value, username: this.f.username.value };
-    await this.modalController.dismiss(newUserSettings);
+  async myDismiss(reason) {
+    if (reason === 'submit') {
+      const newUserSettings = { email: this.f.email.value, username: this.f.username.value };
+      await this.modalController.dismiss(newUserSettings);
+    } else {
+      await this.modalController.dismiss();
+    }
   }
 }
