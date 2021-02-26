@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://apiv1.codeattila.ch/api'
+  apiUrl: 'https://api.codeattila.ch/api'
 };
